@@ -30,14 +30,12 @@ export type RoutesAvgAggregateOutputType = {
   id: number | null
   gpx_size_bytes: number | null
   view_count: number | null
-  user_id: number | null
 }
 
 export type RoutesSumAggregateOutputType = {
   id: number | null
   gpx_size_bytes: bigint | null
   view_count: number | null
-  user_id: number | null
 }
 
 export type RoutesMinAggregateOutputType = {
@@ -52,7 +50,7 @@ export type RoutesMinAggregateOutputType = {
   created_at: Date | null
   title: string | null
   description: string | null
-  user_id: number | null
+  user_id: string | null
 }
 
 export type RoutesMaxAggregateOutputType = {
@@ -67,7 +65,7 @@ export type RoutesMaxAggregateOutputType = {
   created_at: Date | null
   title: string | null
   description: string | null
-  user_id: number | null
+  user_id: string | null
 }
 
 export type RoutesCountAggregateOutputType = {
@@ -91,14 +89,12 @@ export type RoutesAvgAggregateInputType = {
   id?: true
   gpx_size_bytes?: true
   view_count?: true
-  user_id?: true
 }
 
 export type RoutesSumAggregateInputType = {
   id?: true
   gpx_size_bytes?: true
   view_count?: true
-  user_id?: true
 }
 
 export type RoutesMinAggregateInputType = {
@@ -245,7 +241,7 @@ export type RoutesGroupByOutputType = {
   created_at: Date
   title: string | null
   description: string | null
-  user_id: number | null
+  user_id: string | null
   _count: RoutesCountAggregateOutputType | null
   _avg: RoutesAvgAggregateOutputType | null
   _sum: RoutesSumAggregateOutputType | null
@@ -283,8 +279,7 @@ export type routesWhereInput = {
   created_at?: Prisma.DateTimeFilter<"routes"> | Date | string
   title?: Prisma.StringNullableFilter<"routes"> | string | null
   description?: Prisma.StringNullableFilter<"routes"> | string | null
-  user_id?: Prisma.IntNullableFilter<"routes"> | number | null
-  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  user_id?: Prisma.UuidNullableFilter<"routes"> | string | null
 }
 
 export type routesOrderByWithRelationInput = {
@@ -300,7 +295,6 @@ export type routesOrderByWithRelationInput = {
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   user_id?: Prisma.SortOrderInput | Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type routesWhereUniqueInput = Prisma.AtLeast<{
@@ -318,8 +312,7 @@ export type routesWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"routes"> | Date | string
   title?: Prisma.StringNullableFilter<"routes"> | string | null
   description?: Prisma.StringNullableFilter<"routes"> | string | null
-  user_id?: Prisma.IntNullableFilter<"routes"> | number | null
-  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  user_id?: Prisma.UuidNullableFilter<"routes"> | string | null
 }, "id" | "identifier">
 
 export type routesOrderByWithAggregationInput = {
@@ -357,7 +350,7 @@ export type routesScalarWhereWithAggregatesInput = {
   created_at?: Prisma.DateTimeWithAggregatesFilter<"routes"> | Date | string
   title?: Prisma.StringNullableWithAggregatesFilter<"routes"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"routes"> | string | null
-  user_id?: Prisma.IntNullableWithAggregatesFilter<"routes"> | number | null
+  user_id?: Prisma.UuidNullableWithAggregatesFilter<"routes"> | string | null
 }
 
 export type routesCreateInput = {
@@ -372,7 +365,7 @@ export type routesCreateInput = {
   created_at?: Date | string
   title?: string | null
   description?: string | null
-  user?: Prisma.UserCreateNestedOneWithoutRoutesInput
+  user_id?: string | null
 }
 
 export type routesUncheckedCreateInput = {
@@ -387,7 +380,7 @@ export type routesUncheckedCreateInput = {
   created_at?: Date | string
   title?: string | null
   description?: string | null
-  user_id?: number | null
+  user_id?: string | null
 }
 
 export type routesUpdateInput = {
@@ -401,7 +394,7 @@ export type routesUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  user?: Prisma.UserUpdateOneWithoutRoutesNestedInput
+  user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type routesUncheckedUpdateInput = {
@@ -416,7 +409,7 @@ export type routesUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  user_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type routesCreateManyInput = {
@@ -431,7 +424,7 @@ export type routesCreateManyInput = {
   created_at?: Date | string
   title?: string | null
   description?: string | null
-  user_id?: number | null
+  user_id?: string | null
 }
 
 export type routesUpdateManyMutationInput = {
@@ -445,6 +438,7 @@ export type routesUpdateManyMutationInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type routesUncheckedUpdateManyInput = {
@@ -459,7 +453,7 @@ export type routesUncheckedUpdateManyInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  user_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type routesCountOrderByAggregateInput = {
@@ -481,7 +475,6 @@ export type routesAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   gpx_size_bytes?: Prisma.SortOrder
   view_count?: Prisma.SortOrder
-  user_id?: Prisma.SortOrder
 }
 
 export type routesMaxOrderByAggregateInput = {
@@ -518,17 +511,6 @@ export type routesSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   gpx_size_bytes?: Prisma.SortOrder
   view_count?: Prisma.SortOrder
-  user_id?: Prisma.SortOrder
-}
-
-export type RoutesListRelationFilter = {
-  every?: Prisma.routesWhereInput
-  some?: Prisma.routesWhereInput
-  none?: Prisma.routesWhereInput
-}
-
-export type routesOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -559,183 +541,6 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
-export type routesCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.routesCreateWithoutUserInput, Prisma.routesUncheckedCreateWithoutUserInput> | Prisma.routesCreateWithoutUserInput[] | Prisma.routesUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.routesCreateOrConnectWithoutUserInput | Prisma.routesCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.routesCreateManyUserInputEnvelope
-  connect?: Prisma.routesWhereUniqueInput | Prisma.routesWhereUniqueInput[]
-}
-
-export type routesUncheckedCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.routesCreateWithoutUserInput, Prisma.routesUncheckedCreateWithoutUserInput> | Prisma.routesCreateWithoutUserInput[] | Prisma.routesUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.routesCreateOrConnectWithoutUserInput | Prisma.routesCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.routesCreateManyUserInputEnvelope
-  connect?: Prisma.routesWhereUniqueInput | Prisma.routesWhereUniqueInput[]
-}
-
-export type routesUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.routesCreateWithoutUserInput, Prisma.routesUncheckedCreateWithoutUserInput> | Prisma.routesCreateWithoutUserInput[] | Prisma.routesUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.routesCreateOrConnectWithoutUserInput | Prisma.routesCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.routesUpsertWithWhereUniqueWithoutUserInput | Prisma.routesUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.routesCreateManyUserInputEnvelope
-  set?: Prisma.routesWhereUniqueInput | Prisma.routesWhereUniqueInput[]
-  disconnect?: Prisma.routesWhereUniqueInput | Prisma.routesWhereUniqueInput[]
-  delete?: Prisma.routesWhereUniqueInput | Prisma.routesWhereUniqueInput[]
-  connect?: Prisma.routesWhereUniqueInput | Prisma.routesWhereUniqueInput[]
-  update?: Prisma.routesUpdateWithWhereUniqueWithoutUserInput | Prisma.routesUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.routesUpdateManyWithWhereWithoutUserInput | Prisma.routesUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.routesScalarWhereInput | Prisma.routesScalarWhereInput[]
-}
-
-export type routesUncheckedUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.routesCreateWithoutUserInput, Prisma.routesUncheckedCreateWithoutUserInput> | Prisma.routesCreateWithoutUserInput[] | Prisma.routesUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.routesCreateOrConnectWithoutUserInput | Prisma.routesCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.routesUpsertWithWhereUniqueWithoutUserInput | Prisma.routesUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.routesCreateManyUserInputEnvelope
-  set?: Prisma.routesWhereUniqueInput | Prisma.routesWhereUniqueInput[]
-  disconnect?: Prisma.routesWhereUniqueInput | Prisma.routesWhereUniqueInput[]
-  delete?: Prisma.routesWhereUniqueInput | Prisma.routesWhereUniqueInput[]
-  connect?: Prisma.routesWhereUniqueInput | Prisma.routesWhereUniqueInput[]
-  update?: Prisma.routesUpdateWithWhereUniqueWithoutUserInput | Prisma.routesUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.routesUpdateManyWithWhereWithoutUserInput | Prisma.routesUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.routesScalarWhereInput | Prisma.routesScalarWhereInput[]
-}
-
-export type routesCreateWithoutUserInput = {
-  id?: number
-  identifier: string
-  gpx_storage_key?: string | null
-  gpx_size_bytes?: bigint | number | null
-  gpx_sha256?: string | null
-  time?: Date | string
-  last_viewed_at?: Date | string
-  view_count?: number
-  created_at?: Date | string
-  title?: string | null
-  description?: string | null
-}
-
-export type routesUncheckedCreateWithoutUserInput = {
-  id?: number
-  identifier: string
-  gpx_storage_key?: string | null
-  gpx_size_bytes?: bigint | number | null
-  gpx_sha256?: string | null
-  time?: Date | string
-  last_viewed_at?: Date | string
-  view_count?: number
-  created_at?: Date | string
-  title?: string | null
-  description?: string | null
-}
-
-export type routesCreateOrConnectWithoutUserInput = {
-  where: Prisma.routesWhereUniqueInput
-  create: Prisma.XOR<Prisma.routesCreateWithoutUserInput, Prisma.routesUncheckedCreateWithoutUserInput>
-}
-
-export type routesCreateManyUserInputEnvelope = {
-  data: Prisma.routesCreateManyUserInput | Prisma.routesCreateManyUserInput[]
-  skipDuplicates?: boolean
-}
-
-export type routesUpsertWithWhereUniqueWithoutUserInput = {
-  where: Prisma.routesWhereUniqueInput
-  update: Prisma.XOR<Prisma.routesUpdateWithoutUserInput, Prisma.routesUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.routesCreateWithoutUserInput, Prisma.routesUncheckedCreateWithoutUserInput>
-}
-
-export type routesUpdateWithWhereUniqueWithoutUserInput = {
-  where: Prisma.routesWhereUniqueInput
-  data: Prisma.XOR<Prisma.routesUpdateWithoutUserInput, Prisma.routesUncheckedUpdateWithoutUserInput>
-}
-
-export type routesUpdateManyWithWhereWithoutUserInput = {
-  where: Prisma.routesScalarWhereInput
-  data: Prisma.XOR<Prisma.routesUpdateManyMutationInput, Prisma.routesUncheckedUpdateManyWithoutUserInput>
-}
-
-export type routesScalarWhereInput = {
-  AND?: Prisma.routesScalarWhereInput | Prisma.routesScalarWhereInput[]
-  OR?: Prisma.routesScalarWhereInput[]
-  NOT?: Prisma.routesScalarWhereInput | Prisma.routesScalarWhereInput[]
-  id?: Prisma.IntFilter<"routes"> | number
-  identifier?: Prisma.StringFilter<"routes"> | string
-  gpx_storage_key?: Prisma.StringNullableFilter<"routes"> | string | null
-  gpx_size_bytes?: Prisma.BigIntNullableFilter<"routes"> | bigint | number | null
-  gpx_sha256?: Prisma.StringNullableFilter<"routes"> | string | null
-  time?: Prisma.DateTimeFilter<"routes"> | Date | string
-  last_viewed_at?: Prisma.DateTimeFilter<"routes"> | Date | string
-  view_count?: Prisma.IntFilter<"routes"> | number
-  created_at?: Prisma.DateTimeFilter<"routes"> | Date | string
-  title?: Prisma.StringNullableFilter<"routes"> | string | null
-  description?: Prisma.StringNullableFilter<"routes"> | string | null
-  user_id?: Prisma.IntNullableFilter<"routes"> | number | null
-}
-
-export type routesCreateManyUserInput = {
-  id?: number
-  identifier: string
-  gpx_storage_key?: string | null
-  gpx_size_bytes?: bigint | number | null
-  gpx_sha256?: string | null
-  time?: Date | string
-  last_viewed_at?: Date | string
-  view_count?: number
-  created_at?: Date | string
-  title?: string | null
-  description?: string | null
-}
-
-export type routesUpdateWithoutUserInput = {
-  identifier?: Prisma.StringFieldUpdateOperationsInput | string
-  gpx_storage_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gpx_size_bytes?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-  gpx_sha256?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  last_viewed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  view_count?: Prisma.IntFieldUpdateOperationsInput | number
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
-export type routesUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  identifier?: Prisma.StringFieldUpdateOperationsInput | string
-  gpx_storage_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gpx_size_bytes?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-  gpx_sha256?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  last_viewed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  view_count?: Prisma.IntFieldUpdateOperationsInput | number
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
-export type routesUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  identifier?: Prisma.StringFieldUpdateOperationsInput | string
-  gpx_storage_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gpx_size_bytes?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-  gpx_sha256?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  last_viewed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  view_count?: Prisma.IntFieldUpdateOperationsInput | number
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
 
 
 export type routesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -751,7 +556,6 @@ export type routesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   title?: boolean
   description?: boolean
   user_id?: boolean
-  user?: boolean | Prisma.routes$userArgs<ExtArgs>
 }, ExtArgs["result"]["routes"]>
 
 export type routesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -767,7 +571,6 @@ export type routesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   title?: boolean
   description?: boolean
   user_id?: boolean
-  user?: boolean | Prisma.routes$userArgs<ExtArgs>
 }, ExtArgs["result"]["routes"]>
 
 export type routesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -783,7 +586,6 @@ export type routesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   title?: boolean
   description?: boolean
   user_id?: boolean
-  user?: boolean | Prisma.routes$userArgs<ExtArgs>
 }, ExtArgs["result"]["routes"]>
 
 export type routesSelectScalar = {
@@ -802,21 +604,10 @@ export type routesSelectScalar = {
 }
 
 export type routesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identifier" | "gpx_storage_key" | "gpx_size_bytes" | "gpx_sha256" | "time" | "last_viewed_at" | "view_count" | "created_at" | "title" | "description" | "user_id", ExtArgs["result"]["routes"]>
-export type routesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.routes$userArgs<ExtArgs>
-}
-export type routesIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.routes$userArgs<ExtArgs>
-}
-export type routesIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.routes$userArgs<ExtArgs>
-}
 
 export type $routesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "routes"
-  objects: {
-    user: Prisma.$UserPayload<ExtArgs> | null
-  }
+  objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     identifier: string
@@ -829,7 +620,7 @@ export type $routesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     created_at: Date
     title: string | null
     description: string | null
-    user_id: number | null
+    user_id: string | null
   }, ExtArgs["result"]["routes"]>
   composites: {}
 }
@@ -1224,7 +1015,6 @@ readonly fields: routesFieldRefs;
  */
 export interface Prisma__routesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.routes$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.routes$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1265,7 +1055,7 @@ export interface routesFieldRefs {
   readonly created_at: Prisma.FieldRef<"routes", 'DateTime'>
   readonly title: Prisma.FieldRef<"routes", 'String'>
   readonly description: Prisma.FieldRef<"routes", 'String'>
-  readonly user_id: Prisma.FieldRef<"routes", 'Int'>
+  readonly user_id: Prisma.FieldRef<"routes", 'String'>
 }
     
 
@@ -1282,10 +1072,6 @@ export type routesFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the routes
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.routesInclude<ExtArgs> | null
   /**
    * Filter, which routes to fetch.
    */
@@ -1305,10 +1091,6 @@ export type routesFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.routesInclude<ExtArgs> | null
-  /**
    * Filter, which routes to fetch.
    */
   where: Prisma.routesWhereUniqueInput
@@ -1326,10 +1108,6 @@ export type routesFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the routes
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.routesInclude<ExtArgs> | null
   /**
    * Filter, which routes to fetch.
    */
@@ -1379,10 +1157,6 @@ export type routesFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.routesInclude<ExtArgs> | null
-  /**
    * Filter, which routes to fetch.
    */
   where?: Prisma.routesWhereInput
@@ -1430,10 +1204,6 @@ export type routesFindManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the routes
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.routesInclude<ExtArgs> | null
   /**
    * Filter, which routes to fetch.
    */
@@ -1483,10 +1253,6 @@ export type routesCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.routesInclude<ExtArgs> | null
-  /**
    * The data needed to create a routes.
    */
   data: Prisma.XOR<Prisma.routesCreateInput, Prisma.routesUncheckedCreateInput>
@@ -1520,10 +1286,6 @@ export type routesCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    */
   data: Prisma.routesCreateManyInput | Prisma.routesCreateManyInput[]
   skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.routesIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1538,10 +1300,6 @@ export type routesUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the routes
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.routesInclude<ExtArgs> | null
   /**
    * The data needed to update a routes.
    */
@@ -1594,10 +1352,6 @@ export type routesUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many routes to update.
    */
   limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.routesIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1612,10 +1366,6 @@ export type routesUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the routes
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.routesInclude<ExtArgs> | null
   /**
    * The filter to search for the routes to update in case it exists.
    */
@@ -1643,10 +1393,6 @@ export type routesDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.routesInclude<ExtArgs> | null
-  /**
    * Filter which routes to delete.
    */
   where: Prisma.routesWhereUniqueInput
@@ -1667,25 +1413,6 @@ export type routesDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
- * routes.user
- */
-export type routes$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the User
-   */
-  select?: Prisma.UserSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the User
-   */
-  omit?: Prisma.UserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
-}
-
-/**
  * routes without action
  */
 export type routesDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1697,8 +1424,4 @@ export type routesDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the routes
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.routesInclude<ExtArgs> | null
 }

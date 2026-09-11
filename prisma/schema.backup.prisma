@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model routes {
+  id              Int      @unique(map: "idx_24579_id") @default(autoincrement())
+  identifier      String   @unique(map: "idx_24579_identifier") @db.VarChar(255)
+  gpx_storage_key String?  @db.VarChar(500)
+  gpx_size_bytes  BigInt?
+  gpx_sha256      String?  @db.Char(64)
+  time            DateTime @default(now()) @db.Timestamptz(6)
+  last_viewed_at  DateTime @default(now()) @db.Timestamptz(6)
+  view_count      Int      @default(0)
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+  title           String?  @db.VarChar(255)
+  description     String?
+
+  user_id Int?
+  user    User? @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@index([user_id])
+}
+
+// Model/field names below follow the @auth/prisma-adapter conventions
+// (User/Account/Session/VerificationToken, userId/providerAccountId/etc.)
+// while mapping to snake_case tables/columns to match this project's style.
+model User {
+  id            Int       @id @default(autoincrement())
+  name          String?   @db.VarChar(255)
+  email         String    @unique @db.VarChar(255)
+  passwordHash  String?   @map("password_hash") @db.VarChar(255)
+  emailVerified DateTime? @map("email_verified") @db.Timestamptz(6)
+  image         String?   @db.VarChar(500)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  accounts Account[]
+  sessions Session[]
+  routes   routes[]
+
+  @@map("users")
+}
+
+model Account {
+  id                Int     @id @default(autoincrement())
+  userId            Int     @map("user_id")
+  type              String  @db.VarChar(255)
+  provider          String  @db.VarChar(255)
+  providerAccountId String  @map("provider_account_id") @db.VarChar(255)
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String? @db.VarChar(255)
+  scope             String? @db.VarChar(255)
+  id_token          String?
+  session_state     String? @db.VarChar(255)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           Int      @id @default(autoincrement())
+  sessionToken String   @unique @map("session_token") @db.VarChar(255)
+  userId       Int      @map("user_id")
+  expires      DateTime @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String   @db.VarChar(255)
+  token      String   @unique @db.VarChar(255)
+  expires    DateTime @db.Timestamptz(6)
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}

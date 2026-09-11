@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
+import { useSupabaseAuth } from "./SupabaseProvider";
+import { createClient } from "@/app/lib/supabase/client";
 
 const navigation = [
   {
@@ -28,8 +31,16 @@ type HeaderProps = {
 };
 
 const Header = ({ variant = "overlay", actions }: HeaderProps) => {
-  const { status } = useSession();
+  const { status } = useSupabaseAuth();
+  const router = useRouter();
   const isSolid = variant === "solid";
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  };
 
   return (
     <header
@@ -89,7 +100,7 @@ const Header = ({ variant = "overlay", actions }: HeaderProps) => {
 
               <button
                 type="button"
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={handleSignOut}
                 className="rounded-xl border border-ink/15 bg-paper/90 px-4 py-2 text-sm font-bold text-ink transition hover:bg-paper"
               >
                 Log out

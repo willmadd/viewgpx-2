@@ -1,9 +1,9 @@
 "use client";
 
-import { SessionProvider } from "next-auth/react";
+import { SupabaseProvider } from "./SupabaseProvider";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
-  return <SessionProvider>{children}</SessionProvider>;
+  return <SupabaseProvider>{children}</SupabaseProvider>;
 };
 
 export default Providers;

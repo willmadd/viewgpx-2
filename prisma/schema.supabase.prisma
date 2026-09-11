@@ -1,3 +1,13 @@
+// Target schema after running migrate-users-to-supabase.ts.
+//
+// Auth is now handled entirely by Supabase Auth, whose users live in the
+// `auth` schema (not modelled here — Prisma doesn't need to know about it).
+// `routes.user_id` stores the Supabase Auth user's UUID directly, with no
+// Prisma-level relation into it.
+//
+// Once migrate-users-to-supabase.ts has been run against the database,
+// replace prisma/schema.prisma with this file and run `npx prisma generate`.
+
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -23,9 +33,4 @@ model routes {
   user_id String? @db.Uuid
 
   @@index([user_id])
-}
-
-model admins {
-  user_id    String   @id @db.Uuid
-  created_at DateTime @default(now()) @db.Timestamptz(6)
 }

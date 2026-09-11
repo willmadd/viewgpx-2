@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { auth } from "@/auth";
+import { createClient } from "@/app/lib/supabase/server";
 import { prisma } from "@/app/lib/prisma";
 import { uploadGpxToBunny } from "@/app/lib/bunny";
 import { generateRouteIdentifier } from "@/app/lib/identifier";
@@ -15,10 +15,12 @@ const SaveRouteSchema = z.object({
 });
 
 export async function GET() {
-  const session = await auth();
-  const userId = session?.user?.id;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!userId) {
+  if (!user) {
     return NextResponse.json(
       { error: "You must be signed in to view your saved routes." },
       { status: 401 },
@@ -26,7 +28,7 @@ export async function GET() {
   }
 
   const routes = await prisma.routes.findMany({
-    where: { user_id: Number(userId) },
+    where: { user_id: user.id },
     orderBy: { created_at: "desc" },
     select: {
       identifier: true,
@@ -41,8 +43,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const session = await auth();
-  const userId = session?.user?.id;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const body = await request.json().catch(() => null);
   const parsed = SaveRouteSchema.safeParse(body);
@@ -71,7 +75,7 @@ export async function POST(request: Request) {
       gpx_storage_key: storageKey,
       gpx_size_bytes: BigInt(contents.length),
       gpx_sha256: sha256,
-      user_id: userId ? Number(userId) : null,
+      user_id: user?.id ?? null,
     },
   });
 

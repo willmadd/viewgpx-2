@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/auth";
+import { createClient } from "@/app/lib/supabase/server";
 import { prisma } from "@/app/lib/prisma";
+import { isAdmin } from "@/app/lib/isAdmin";
 import Header from "@/app/_components/Header";
 
 const formatDate = (date: Date) =>
@@ -13,23 +14,29 @@ const formatDate = (date: Date) =>
   }).format(date);
 
 export default async function AccountPage() {
-  const session = await auth();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session?.user?.id) {
+  if (!user) {
     redirect("/login");
   }
 
-  const routes = await prisma.routes.findMany({
-    where: { user_id: Number(session.user.id) },
-    orderBy: { created_at: "desc" },
-    select: {
-      identifier: true,
-      title: true,
-      description: true,
-      created_at: true,
-      view_count: true,
-    },
-  });
+  const [routes, admin] = await Promise.all([
+    prisma.routes.findMany({
+      where: { user_id: user.id },
+      orderBy: { created_at: "desc" },
+      select: {
+        identifier: true,
+        title: true,
+        description: true,
+        created_at: true,
+        view_count: true,
+      },
+    }),
+    isAdmin(user.id),
+  ]);
 
   return (
     <main className="min-h-screen bg-paper">
@@ -39,7 +46,18 @@ export default async function AccountPage() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-ink">Your saved routes</h1>
 
-          <span className="text-sm text-ink/50">{session.user.email}</span>
+          <div className="flex items-center gap-4">
+            {admin && (
+              <Link
+                href="/admin"
+                className="text-sm font-semibold text-pine underline-offset-4 hover:underline"
+              >
+                Admin
+              </Link>
+            )}
+
+            <span className="text-sm text-ink/50">{user.email}</span>
+          </div>
         </div>
 
         {routes.length === 0 ? (

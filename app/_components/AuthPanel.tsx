@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import Link from "next/link";
+
+import { createClient } from "@/app/lib/supabase/client";
 
 type AuthPanelProps = {
   compact?: boolean;
@@ -39,9 +41,17 @@ const AuthPanel = ({ compact = false, onAuthenticated }: AuthPanelProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [awaitingConfirmation, setAwaitingConfirmation] = useState(false);
 
-  const handleGoogleSignIn = () => {
-    signIn("google");
+  const handleGoogleSignIn = async () => {
+    const supabase = createClient();
+
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
   };
 
   const handleLogin = async (event: React.FormEvent) => {
@@ -51,13 +61,13 @@ const AuthPanel = ({ compact = false, onAuthenticated }: AuthPanelProps) => {
     setIsSubmitting(true);
 
     try {
-      const result = await signIn("credentials", {
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
-        redirect: false,
       });
 
-      if (result?.error) {
+      if (signInError) {
         setError("Incorrect email or password.");
         return;
       }
@@ -75,34 +85,28 @@ const AuthPanel = ({ compact = false, onAuthenticated }: AuthPanelProps) => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+      const supabase = createClient();
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { name },
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/`,
+        },
       });
 
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        setError(data.error || "Could not create your account.");
+      if (signUpError) {
+        setError(signUpError.message || "Could not create your account.");
         return;
       }
 
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        setNotice(
-          "Account created. We've sent a verification link to your email — you can log in now.",
-        );
+      if (!data.session) {
+        setNotice("Account created! Check your email to confirm your address.");
+        setAwaitingConfirmation(true);
         setMode("login");
         return;
       }
 
-      setNotice("Account created! Check your email to verify your address.");
       onAuthenticated?.();
     } finally {
       setIsSubmitting(false);
@@ -135,6 +139,7 @@ const AuthPanel = ({ compact = false, onAuthenticated }: AuthPanelProps) => {
             setMode("login");
             setError(null);
             setNotice(null);
+            setAwaitingConfirmation(false);
           }}
           className={`flex-1 rounded-lg py-1.5 transition ${
             mode === "login" ? "bg-white text-ink shadow-sm" : "text-ink/50"
@@ -149,6 +154,7 @@ const AuthPanel = ({ compact = false, onAuthenticated }: AuthPanelProps) => {
             setMode("signup");
             setError(null);
             setNotice(null);
+            setAwaitingConfirmation(false);
           }}
           className={`flex-1 rounded-lg py-1.5 transition ${
             mode === "signup" ? "bg-white text-ink shadow-sm" : "text-ink/50"
@@ -177,7 +183,10 @@ const AuthPanel = ({ compact = false, onAuthenticated }: AuthPanelProps) => {
           type="email"
           required
           value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            setAwaitingConfirmation(false);
+          }}
           placeholder="Email address"
           className="w-full rounded-xl border border-ink/15 bg-white/80 px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-ink/35 focus:border-pine focus:ring-2 focus:ring-pine/15"
         />
@@ -187,24 +196,40 @@ const AuthPanel = ({ compact = false, onAuthenticated }: AuthPanelProps) => {
           required
           minLength={8}
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={(event) => {
+            setPassword(event.target.value);
+            setAwaitingConfirmation(false);
+          }}
           placeholder={mode === "signup" ? "Password (8+ characters)" : "Password"}
           className="w-full rounded-xl border border-ink/15 bg-white/80 px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-ink/35 focus:border-pine focus:ring-2 focus:ring-pine/15"
         />
+
+        {mode === "login" && (
+          <div className="text-right">
+            <Link
+              href="/forgot-password"
+              className="text-xs font-semibold text-pine underline-offset-4 hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        )}
 
         {error && <p className="text-sm font-medium text-red-600">{error}</p>}
         {notice && <p className="text-sm font-medium text-pine">{notice}</p>}
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || (mode === "login" && awaitingConfirmation)}
           className="inline-flex w-full items-center justify-center rounded-xl bg-terracotta px-4 py-2.5 text-sm font-bold text-paper shadow-sm transition hover:bg-terracotta/90 disabled:opacity-60"
         >
           {isSubmitting
             ? "Please wait…"
-            : mode === "login"
-              ? "Log in"
-              : "Create account"}
+            : mode === "login" && awaitingConfirmation
+              ? "Confirm your email first"
+              : mode === "login"
+                ? "Log in"
+                : "Create account"}
         </button>
       </form>
     </div>

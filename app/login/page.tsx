@@ -2,13 +2,13 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 import AuthPanel from "../_components/AuthPanel";
 import Header from "../_components/Header";
+import { useSupabaseAuth } from "../_components/SupabaseProvider";
 
 const LoginPage = () => {
-  const { status } = useSession();
+  const { status } = useSupabaseAuth();
   const router = useRouter();
 
   useEffect(() => {

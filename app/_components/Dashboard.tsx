@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import {
   MapContainer,
   Marker,
@@ -16,6 +15,7 @@ import L, { type LatLngBoundsExpression } from "leaflet";
 
 import AuthPanel from "./AuthPanel";
 import Header from "./Header";
+import { useSupabaseAuth } from "./SupabaseProvider";
 
 import "leaflet/dist/leaflet.css";
 
@@ -733,7 +733,7 @@ const CurrentRoutePanelWithSave = ({
   onDownloadGpx: () => void;
 }) => {
   const router = useRouter();
-  const { status } = useSession();
+  const { status } = useSupabaseAuth();
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
