@@ -16,6 +16,7 @@ import L, { type LatLngBoundsExpression } from "leaflet";
 import AuthPanel from "./AuthPanel";
 import Header from "./Header";
 import { useSupabaseAuth } from "./SupabaseProvider";
+import { event as trackEvent } from "@/app/lib/gtag";
 
 import "leaflet/dist/leaflet.css";
 
@@ -649,6 +650,11 @@ const Dashboard = ({
     element.remove();
 
     URL.revokeObjectURL(url);
+
+    trackEvent("file_download", {
+      file_name: element.download,
+      file_extension: "gpx",
+    });
   };
 
   if (!gpsJson || !route.length) {
@@ -770,6 +776,7 @@ const CurrentRoutePanelWithSave = ({
         // ignore storage errors
       }
 
+      trackEvent("save_route", { route_identifier: data.identifier });
       router.push(`/route/${data.identifier}`);
     } finally {
       setIsSaving(false);
@@ -785,6 +792,7 @@ const CurrentRoutePanelWithSave = ({
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      trackEvent("share", { method: "copy_link" });
     } catch {
       // ignore clipboard errors
     }
@@ -806,6 +814,7 @@ const CurrentRoutePanelWithSave = ({
       });
 
       setQrDataUrl(dataUrl);
+      trackEvent("share", { method: "qr_code" });
     } catch {
       // ignore QR generation errors
     } finally {
@@ -970,7 +979,12 @@ const CurrentRoutePanelWithSave = ({
         doc.setTextColor(0);
       }
 
-      doc.save(`${identifier || "route"}.pdf`);
+      const pdfFileName = `${identifier || "route"}.pdf`;
+      doc.save(pdfFileName);
+      trackEvent("file_download", {
+        file_name: pdfFileName,
+        file_extension: "pdf",
+      });
     } catch {
       setPdfError("Could not generate the PDF. Please try again.");
     } finally {

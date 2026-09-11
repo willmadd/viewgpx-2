@@ -15,6 +15,8 @@ import {
   X,
 } from "lucide-react";
 
+import { event as trackEvent } from "@/app/lib/gtag";
+
 type BlurbProps = {
   setGpx: (gpxContent: string) => void | Promise<void>;
 };
@@ -98,6 +100,7 @@ const Blurb = ({ setGpx }: BlurbProps) => {
           );
         }
 
+        trackEvent("file_upload", { file_extension: "gpx" });
         await setGpx(gpxContent);
       } catch (readError) {
         setError(
