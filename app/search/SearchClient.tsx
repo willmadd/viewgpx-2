@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 
 import Header from "../_components/Header";
+import { event as trackEvent } from "@/app/lib/gtag";
 
 type RouteResult = {
   identifier: string;
@@ -83,6 +84,12 @@ const SearchClient = () => {
 
     return () => controller.abort();
   }, [submittedQuery, page]);
+
+  useEffect(() => {
+    if (submittedQuery) {
+      trackEvent("search", { search_term: submittedQuery });
+    }
+  }, [submittedQuery]);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();

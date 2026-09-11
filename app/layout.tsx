@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import Providers from "./_components/Providers";
 import Footer from "./_components/Footer";
+import GoogleAnalytics from "./_components/GoogleAnalytics";
+import AnalyticsPageview from "./_components/AnalyticsPageview";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,6 +59,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <GoogleAnalytics />
+
+        <Suspense fallback={null}>
+          <AnalyticsPageview />
+        </Suspense>
+
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
+
         <Providers>{children}</Providers>
         <Footer />
       </body>

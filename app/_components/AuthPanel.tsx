@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 import { createClient } from "@/app/lib/supabase/client";
+import { event as trackEvent } from "@/app/lib/gtag";
 
 type AuthPanelProps = {
   compact?: boolean;
@@ -46,6 +47,8 @@ const AuthPanel = ({ compact = false, onAuthenticated }: AuthPanelProps) => {
   const handleGoogleSignIn = async () => {
     const supabase = createClient();
 
+    trackEvent("login", { method: "Google" });
+
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -72,6 +75,7 @@ const AuthPanel = ({ compact = false, onAuthenticated }: AuthPanelProps) => {
         return;
       }
 
+      trackEvent("login", { method: "email" });
       onAuthenticated?.();
     } finally {
       setIsSubmitting(false);
@@ -99,6 +103,8 @@ const AuthPanel = ({ compact = false, onAuthenticated }: AuthPanelProps) => {
         setError(signUpError.message || "Could not create your account.");
         return;
       }
+
+      trackEvent("sign_up", { method: "email" });
 
       if (!data.session) {
         setNotice("Account created! Check your email to confirm your address.");
