@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { prisma } from "@/app/lib/prisma";
 import Header from "@/app/_components/Header";
+
+export const metadata: Metadata = {
+  title: "Sitemap",
+  description: "Every page and shared route on View GPX.",
+};
 
 const staticPages = [
   { href: "/", label: "Home" },

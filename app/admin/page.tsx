@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -5,6 +6,12 @@ import { createClient } from "@/app/lib/supabase/server";
 import { prisma } from "@/app/lib/prisma";
 import { isAdmin } from "@/app/lib/isAdmin";
 import Header from "@/app/_components/Header";
+
+export const metadata: Metadata = {
+  title: "Admin",
+  description: "Site activity overview for View GPX admins.",
+  robots: { index: false, follow: false },
+};
 
 const formatDate = (date: Date) =>
   new Intl.DateTimeFormat("en-GB", {

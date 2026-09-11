@@ -64,8 +64,10 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${route.title || "Route"} | View GPX`,
-    description: route.description || undefined,
+    title: `${route.title || "Route"} | Route Information `,
+    description:
+      route.description ||
+      `View, Download and share ${route.title || "Route"} information and GPX file on View GPX.`,
   };
 }
 
