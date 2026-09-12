@@ -2,6 +2,11 @@ import type { MetadataRoute } from "next";
 
 import { prisma } from "@/app/lib/prisma";
 
+// Force this to be generated per-request rather than at build time — the
+// production database isn't reachable from the Vercel build step, only from
+// deployed serverless functions.
+export const dynamic = "force-dynamic";
+
 const BASE_URL = "https://viewgpx.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
