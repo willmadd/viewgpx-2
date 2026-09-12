@@ -33,7 +33,6 @@ const Header = ({ variant = "overlay", actions }: HeaderProps) => {
   const { status } = useSupabaseAuth();
   const router = useRouter();
   const isSolid = variant === "solid";
-
   const handleSignOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
