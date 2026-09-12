@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
 import { useSupabaseAuth } from "./SupabaseProvider";
 import { createClient } from "@/app/lib/supabase/client";
 
@@ -34,7 +33,6 @@ const Header = ({ variant = "overlay", actions }: HeaderProps) => {
   const { status } = useSupabaseAuth();
   const router = useRouter();
   const isSolid = variant === "solid";
-
   const handleSignOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -46,7 +44,7 @@ const Header = ({ variant = "overlay", actions }: HeaderProps) => {
     <header
       className={
         isSolid
-          ? "relative z-[1001] w-full border-b border-ink/10 bg-paper"
+          ? "relative z-1001 w-full border-b border-ink/10 bg-paper"
           : "absolute inset-x-0 top-0 z-50 w-full"
       }
     >
@@ -95,7 +93,7 @@ const Header = ({ variant = "overlay", actions }: HeaderProps) => {
                 href="/account"
                 className="text-sm font-semibold text-ink underline-offset-4 decoration-terracotta drop-shadow-sm transition hover:text-paper hover:underline"
               >
-                My routes
+                Dashboard
               </Link>
 
               <button

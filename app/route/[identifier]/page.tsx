@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { createClient } from "@/app/lib/supabase/server";
 import { prisma } from "@/app/lib/prisma";
 import RouteMapLoader from "./RouteMapLoader";
 
@@ -12,6 +13,13 @@ const getRoute = async (identifier: string) => {
   if (!route || !route.gpx_storage_key) {
     return null;
   }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const isOwner = Boolean(user && route.user_id && user.id === route.user_id);
 
   const cdnHost = process.env.NEXT_PUBLIC_GPX_CDN_URL;
 
@@ -43,8 +51,10 @@ const getRoute = async (identifier: string) => {
     identifier: route.identifier,
     title: route.title,
     description: route.description,
+    type: route.type,
     gpxFile,
     viewCount: updated.view_count,
+    isOwner,
   };
 };
 
@@ -88,8 +98,10 @@ export default async function RoutePage({
       identifier={route.identifier}
       title={route.title}
       description={route.description}
+      type={route.type}
       gpxFile={route.gpxFile}
       viewCount={route.viewCount}
+      isOwner={route.isOwner}
     />
   );
 }

@@ -52,7 +52,9 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   routes: 'routes',
-  admins: 'admins'
+  admins: 'admins',
+  pages: 'pages',
+  page_routes: 'page_routes'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -77,12 +79,14 @@ export const RoutesScalarFieldEnum = {
   gpx_storage_key: 'gpx_storage_key',
   gpx_size_bytes: 'gpx_size_bytes',
   gpx_sha256: 'gpx_sha256',
+  thumbnail_key: 'thumbnail_key',
   time: 'time',
   last_viewed_at: 'last_viewed_at',
   view_count: 'view_count',
   created_at: 'created_at',
   title: 'title',
   description: 'description',
+  type: 'type',
   user_id: 'user_id'
 } as const
 
@@ -95,6 +99,29 @@ export const AdminsScalarFieldEnum = {
 } as const
 
 export type AdminsScalarFieldEnum = (typeof AdminsScalarFieldEnum)[keyof typeof AdminsScalarFieldEnum]
+
+
+export const PagesScalarFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  user_id: 'user_id',
+  title: 'title',
+  description: 'description',
+  is_public: 'is_public',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type PagesScalarFieldEnum = (typeof PagesScalarFieldEnum)[keyof typeof PagesScalarFieldEnum]
+
+
+export const Page_routesScalarFieldEnum = {
+  page_id: 'page_id',
+  route_id: 'route_id',
+  created_at: 'created_at'
+} as const
+
+export type Page_routesScalarFieldEnum = (typeof Page_routesScalarFieldEnum)[keyof typeof Page_routesScalarFieldEnum]
 
 
 export const SortOrder = {

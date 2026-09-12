@@ -6,6 +6,7 @@ import {
   CloudUpload,
   Download,
   FileDown,
+  FolderPlus,
   Link2,
   ListChecks,
   Map,
@@ -74,6 +75,12 @@ const newFeatures = [
     description:
       "Every saved route gets a permanent link you can copy and send in a click.",
     icon: Link2,
+  },
+  {
+    title: "Collections",
+    description:
+      "Group your favourite routes into a collection, choose a URL, and share them all in one place — public or just for you.",
+    icon: FolderPlus,
   },
 ];
 

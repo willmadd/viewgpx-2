@@ -15,8 +15,11 @@ import L, { type LatLngBoundsExpression } from "leaflet";
 
 import AuthPanel from "./AuthPanel";
 import Header from "./Header";
+import AddToCollectionMenu from "./AddToCollectionMenu";
+import DraftCollectionMenu from "./DraftCollectionMenu";
 import { useSupabaseAuth } from "./SupabaseProvider";
 import { event as trackEvent } from "@/app/lib/gtag";
+import { ROUTE_TYPES, getRouteTypeLabel } from "@/app/lib/routeTypes";
 
 import "leaflet/dist/leaflet.css";
 
@@ -32,6 +35,7 @@ type GpxData = {
   name?: string;
   title?: string;
   description?: string;
+  type?: string;
   route: GpxPoint[];
 };
 
@@ -43,6 +47,7 @@ type DashboardProps = {
   mode?: DashboardMode;
   identifier?: string;
   viewCount?: number;
+  isOwner?: boolean;
   setError?: () => void;
 };
 
@@ -589,6 +594,7 @@ const Dashboard = ({
   mode = "draft",
   identifier,
   viewCount,
+  isOwner = false,
   setError,
 }: DashboardProps) => {
   const [marker, setMarker] = useState<MapMarker | null>(null);
@@ -596,6 +602,7 @@ const Dashboard = ({
     gpsJson?.title || (gpsJson?.name !== "gpxdata" ? gpsJson?.name : "") || "",
   );
   const [description, setDescription] = useState(gpsJson?.description ?? "");
+  const [type, setType] = useState(gpsJson?.type ?? "");
 
   const route = useMemo(() => gpsJson?.route ?? [], [gpsJson]);
 
@@ -690,8 +697,11 @@ const Dashboard = ({
             setTitle={setTitle}
             description={description}
             setDescription={setDescription}
+            type={type}
+            setType={setType}
             identifier={identifier}
             viewCount={viewCount}
+            isOwner={isOwner}
             gpxFile={gpxFile}
             route={route}
             onDownloadGpx={downloadGpxFile}
@@ -721,8 +731,11 @@ const CurrentRoutePanelWithSave = ({
   setTitle,
   description,
   setDescription,
+  type,
+  setType,
   identifier,
   viewCount,
+  isOwner,
   gpxFile,
   route,
   onDownloadGpx,
@@ -732,8 +745,11 @@ const CurrentRoutePanelWithSave = ({
   setTitle: (value: string) => void;
   description: string;
   setDescription: (value: string) => void;
+  type: string;
+  setType: (value: string) => void;
   identifier?: string;
   viewCount?: number;
+  isOwner: boolean;
   gpxFile: string;
   route: GpxPoint[];
   onDownloadGpx: () => void;
@@ -748,19 +764,90 @@ const CurrentRoutePanelWithSave = ({
   const [isLoadingQr, setIsLoadingQr] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [selectedCollectionIdentifiers, setSelectedCollectionIdentifiers] =
+    useState<string[]>([]);
+  const [pendingCollectionTitles, setPendingCollectionTitles] = useState<
+    string[]
+  >([]);
 
   const isSaved = mode === "saved";
   const hasDescription = description.trim().length > 0;
+  const routeTypeLabel = getRouteTypeLabel(type);
+
+  const toggleCollectionIdentifier = (collectionIdentifier: string) => {
+    setSelectedCollectionIdentifiers((current) =>
+      current.includes(collectionIdentifier)
+        ? current.filter((item) => item !== collectionIdentifier)
+        : [...current, collectionIdentifier],
+    );
+  };
+
+  const addPendingCollectionTitle = (collectionTitle: string) => {
+    setPendingCollectionTitles((current) =>
+      current.includes(collectionTitle)
+        ? current
+        : [...current, collectionTitle],
+    );
+  };
+
+  const removePendingCollectionTitle = (collectionTitle: string) => {
+    setPendingCollectionTitles((current) =>
+      current.filter((item) => item !== collectionTitle),
+    );
+  };
+
+  const attachToCollections = async (routeIdentifier: string) => {
+    const collectionIdentifiers = [...selectedCollectionIdentifiers];
+
+    for (const collectionTitle of pendingCollectionTitles) {
+      try {
+        const createResponse = await fetch("/api/collections", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: collectionTitle, isPublic: true }),
+        });
+
+        const createData = await createResponse.json().catch(() => ({}));
+
+        if (createResponse.ok) {
+          collectionIdentifiers.push(createData.identifier);
+        }
+      } catch {
+        // ignore collection creation errors — the route itself already saved
+      }
+    }
+
+    await Promise.all(
+      collectionIdentifiers.map((collectionIdentifier) =>
+        fetch(`/api/collections/${collectionIdentifier}/routes`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ routeIdentifier }),
+        }).catch(() => null),
+      ),
+    );
+  };
 
   const handleSave = async () => {
     setSaveError(null);
     setIsSaving(true);
 
     try {
+      const { renderStaticRouteMap } = await import("../utils/pdfImages");
+      const thumbnail = await renderStaticRouteMap(route, 256, 256).catch(
+        () => null,
+      );
+
       const response = await fetch("/api/routes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description, gpx: gpxFile }),
+        body: JSON.stringify({
+          title,
+          description,
+          type,
+          thumbnail: thumbnail ?? undefined,
+          gpx: gpxFile,
+        }),
       });
 
       const data = await response.json().catch(() => ({}));
@@ -768,6 +855,10 @@ const CurrentRoutePanelWithSave = ({
       if (!response.ok) {
         setSaveError(data.error || "Could not save this route.");
         return;
+      }
+
+      if (selectedCollectionIdentifiers.length || pendingCollectionTitles.length) {
+        await attachToCollections(data.identifier);
       }
 
       try {
@@ -1034,7 +1125,10 @@ const CurrentRoutePanelWithSave = ({
               htmlFor="route-description"
               className="mb-1.5 block text-sm font-semibold text-ink"
             >
-              Description
+              Description{" "}
+              {!isSaved && (
+                <span className="font-normal text-ink/40">(optional)</span>
+              )}
             </label>
 
             <textarea
@@ -1047,6 +1141,38 @@ const CurrentRoutePanelWithSave = ({
               readOnly={isSaved}
               className="w-full resize-none rounded-xl border border-ink/15 bg-white/80 px-3.5 py-2.5 text-sm leading-5 text-ink outline-none transition placeholder:text-ink/35 read-only:bg-ink/5 focus:border-pine focus:ring-2 focus:ring-pine/15"
             />
+          </div>
+        )}
+
+        {isSaved ? (
+          routeTypeLabel && (
+            <p className="inline-flex rounded-full bg-pine/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-pine">
+              {routeTypeLabel}
+            </p>
+          )
+        ) : (
+          <div>
+            <label
+              htmlFor="route-type"
+              className="mb-1.5 block text-sm font-semibold text-ink"
+            >
+              Route type{" "}
+              <span className="font-normal text-ink/40">(optional)</span>
+            </label>
+
+            <select
+              id="route-type"
+              value={type}
+              onChange={(event) => setType(event.target.value)}
+              className="w-full rounded-xl border border-ink/15 bg-white/80 px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-pine focus:ring-2 focus:ring-pine/15"
+            >
+              <option value="">Select an activity</option>
+              {ROUTE_TYPES.map((routeType) => (
+                <option key={routeType.value} value={routeType.value}>
+                  {routeType.label}
+                </option>
+              ))}
+            </select>
           </div>
         )}
 
@@ -1092,6 +1218,10 @@ const CurrentRoutePanelWithSave = ({
               </button>
             </div>
 
+            {isOwner && identifier && (
+              <AddToCollectionMenu routeIdentifier={identifier} />
+            )}
+
             {pdfError && (
               <p className="text-center text-xs font-medium text-red-600">
                 {pdfError}
@@ -1125,6 +1255,18 @@ const CurrentRoutePanelWithSave = ({
           </div>
         ) : (
           <div>
+            {status === "authenticated" && (
+              <div className="mb-3">
+                <DraftCollectionMenu
+                  selectedIdentifiers={selectedCollectionIdentifiers}
+                  onToggleIdentifier={toggleCollectionIdentifier}
+                  pendingTitles={pendingCollectionTitles}
+                  onAddPendingTitle={addPendingCollectionTitle}
+                  onRemovePendingTitle={removePendingCollectionTitle}
+                />
+              </div>
+            )}
+
             <button
               type="button"
               onClick={handleSave}

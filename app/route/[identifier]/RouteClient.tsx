@@ -9,16 +9,20 @@ type RouteClientProps = {
   identifier: string;
   title: string | null;
   description: string | null;
+  type: string | null;
   gpxFile: string;
   viewCount: number;
+  isOwner: boolean;
 };
 
 const RouteClient = ({
   identifier,
   title,
   description,
+  type,
   gpxFile,
   viewCount,
+  isOwner,
 }: RouteClientProps) => {
   const gpsJson = useMemo(() => {
     const converted = convertGpxToJson(gpxFile);
@@ -31,9 +35,10 @@ const RouteClient = ({
       name: converted.name ?? undefined,
       title: title ?? undefined,
       description: description ?? undefined,
+      type: type ?? undefined,
       route: converted.route,
     };
-  }, [gpxFile, title, description]);
+  }, [gpxFile, title, description, type]);
 
   return (
     <Dashboard
@@ -42,6 +47,7 @@ const RouteClient = ({
       mode="saved"
       identifier={identifier}
       viewCount={viewCount}
+      isOwner={isOwner}
     />
   );
 };

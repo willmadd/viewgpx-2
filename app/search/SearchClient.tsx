@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 
 import Header from "../_components/Header";
+import RouteThumbnail from "../_components/RouteThumbnail";
 import { event as trackEvent } from "@/app/lib/gtag";
 
 type RouteResult = {
@@ -12,6 +13,7 @@ type RouteResult = {
   description: string | null;
   created_at: string;
   view_count: number;
+  thumbnailUrl: string | null;
 };
 
 const quickSearches = [
@@ -189,9 +191,14 @@ const SearchClient = () => {
                   <li key={route.identifier}>
                     <Link
                       href={`/route/${route.identifier}`}
-                      className="flex items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-white/70 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-5"
+                      className="flex items-center gap-4 rounded-2xl border border-ink/10 bg-white/70 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-5"
                     >
-                      <div className="min-w-0">
+                      <RouteThumbnail
+                        src={route.thumbnailUrl}
+                        alt={route.title || route.identifier}
+                      />
+
+                      <div className="min-w-0 flex-1">
                         <p className="truncate font-bold text-ink">
                           {route.title || route.identifier}
                         </p>

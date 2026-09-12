@@ -7,7 +7,7 @@ import { prisma } from "@/app/lib/prisma";
 const HASH_ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789";
 const DIACRITICS_PATTERN = /[̀-ͯ]/g;
 
-const slugify = (value: string): string =>
+export const slugify = (value: string): string =>
   value
     .normalize("NFKD")
     .replace(DIACRITICS_PATTERN, "")
@@ -48,4 +48,25 @@ export const generateRouteIdentifier = async (
   }
 
   throw new Error("Could not generate a unique route identifier");
+};
+
+export const generateCollectionIdentifier = async (
+  title: string | null | undefined,
+): Promise<string> => {
+  const base = slugify(title || "") || "collection";
+
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    const identifier = `${base}-${randomHash()}`;
+
+    const existing = await prisma.pages.findUnique({
+      where: { identifier },
+      select: { id: true },
+    });
+
+    if (!existing) {
+      return identifier;
+    }
+  }
+
+  throw new Error("Could not generate a unique collection identifier");
 };

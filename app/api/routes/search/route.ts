@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { Prisma } from "@/generated/prisma/client";
 
 import { prisma } from "@/app/lib/prisma";
+import { getThumbnailUrl } from "@/app/lib/thumbnail";
 
 const QuerySchema = z.object({
   q: z.string().trim().max(120).optional(),
@@ -48,10 +49,19 @@ export async function GET(request: Request) {
         description: true,
         created_at: true,
         view_count: true,
+        thumbnail_key: true,
       },
     }),
     prisma.routes.count({ where }),
   ]);
 
-  return NextResponse.json({ routes, total, page, pageSize: PAGE_SIZE });
+  return NextResponse.json({
+    routes: routes.map(({ thumbnail_key, ...route }) => ({
+      ...route,
+      thumbnailUrl: getThumbnailUrl(thumbnail_key),
+    })),
+    total,
+    page,
+    pageSize: PAGE_SIZE,
+  });
 }

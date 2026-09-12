@@ -41,20 +41,35 @@ type RouteRow = {
   title: string | null;
   view_count: number;
   created_at: Date;
+  last_viewed_at: Date;
 };
 
-const RouteList = ({
+const routeSelect = {
+  identifier: true,
+  title: true,
+  view_count: true,
+  created_at: true,
+  last_viewed_at: true,
+} as const;
+
+type CollectionRow = {
+  identifier: string;
+  title: string | null;
+  is_public: boolean;
+  created_at: Date;
+  _count: { page_routes: number };
+};
+
+const RouteTable = ({
   title,
   description,
   routes,
   emptyLabel,
-  metric,
 }: {
   title: string;
   description: string;
   routes: RouteRow[];
   emptyLabel: string;
-  metric: (route: RouteRow) => string;
 }) => (
   <section className="rounded-2xl border border-ink/10 bg-paper p-5 sm:p-6">
     <h2 className="text-lg font-bold text-ink">{title}</h2>
@@ -63,30 +78,103 @@ const RouteList = ({
     {routes.length === 0 ? (
       <p className="mt-4 text-sm text-ink/50">{emptyLabel}</p>
     ) : (
-      <ol className="mt-4 space-y-2">
-        {routes.map((route, index) => (
-          <li key={route.identifier}>
-            <Link
-              href={`/route/${route.identifier}`}
-              className="flex items-center justify-between gap-4 rounded-xl border border-ink/10 bg-white/70 px-4 py-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-pine/10 text-xs font-bold text-pine">
-                  {index + 1}
-                </span>
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full min-w-[480px] text-sm">
+          <thead>
+            <tr className="text-left text-xs font-bold uppercase tracking-wide text-ink/40">
+              <th className="pb-2 pr-3 font-bold">#</th>
+              <th className="pb-2 pr-3 font-bold">Route</th>
+              <th className="pb-2 pr-3 font-bold">Views</th>
+              <th className="pb-2 pr-3 font-bold">Created</th>
+              <th className="pb-2 font-bold">Last viewed</th>
+            </tr>
+          </thead>
 
-                <span className="truncate font-semibold text-ink">
-                  {route.title || route.identifier}
-                </span>
-              </div>
+          <tbody className="divide-y divide-ink/5">
+            {routes.map((route, index) => (
+              <tr key={route.identifier}>
+                <td className="py-2.5 pr-3 text-ink/40">{index + 1}</td>
 
-              <span className="shrink-0 text-xs font-medium text-ink/50">
-                {metric(route)}
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ol>
+                <td className="max-w-[220px] py-2.5 pr-3">
+                  <Link
+                    href={`/route/${route.identifier}`}
+                    className="block truncate font-semibold text-ink underline-offset-4 hover:text-pine hover:underline"
+                  >
+                    {route.title || route.identifier}
+                  </Link>
+                </td>
+
+                <td className="py-2.5 pr-3 text-ink/60">{route.view_count}</td>
+                <td className="whitespace-nowrap py-2.5 pr-3 text-ink/60">
+                  {formatDate(route.created_at)}
+                </td>
+                <td className="whitespace-nowrap py-2.5 text-ink/60">
+                  {formatDate(route.last_viewed_at)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </section>
+);
+
+const CollectionTable = ({
+  title,
+  description,
+  collections,
+  emptyLabel,
+}: {
+  title: string;
+  description: string;
+  collections: CollectionRow[];
+  emptyLabel: string;
+}) => (
+  <section className="rounded-2xl border border-ink/10 bg-paper p-5 sm:p-6">
+    <h2 className="text-lg font-bold text-ink">{title}</h2>
+    <p className="mt-1 text-sm text-ink/60">{description}</p>
+
+    {collections.length === 0 ? (
+      <p className="mt-4 text-sm text-ink/50">{emptyLabel}</p>
+    ) : (
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full min-w-[480px] text-sm">
+          <thead>
+            <tr className="text-left text-xs font-bold uppercase tracking-wide text-ink/40">
+              <th className="pb-2 pr-3 font-bold">#</th>
+              <th className="pb-2 pr-3 font-bold">Collection</th>
+              <th className="pb-2 pr-3 font-bold">Visibility</th>
+              <th className="pb-2 pr-3 font-bold">Routes</th>
+              <th className="pb-2 font-bold">Created</th>
+            </tr>
+          </thead>
+
+          <tbody className="divide-y divide-ink/5">
+            {collections.map((collection, index) => (
+              <tr key={collection.identifier}>
+                <td className="py-2.5 pr-3 text-ink/40">{index + 1}</td>
+
+                <td className="max-w-[220px] truncate py-2.5 pr-3 font-semibold text-ink">
+                  {collection.title || collection.identifier}
+                </td>
+
+                <td className="py-2.5 pr-3 text-ink/60">
+                  {collection.is_public ? "Public" : "Private"}
+                </td>
+
+                <td className="py-2.5 pr-3 text-ink/60">
+                  {collection._count.page_routes}
+                </td>
+
+                <td className="whitespace-nowrap py-2.5 text-ink/60">
+                  {formatDate(collection.created_at)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     )}
   </section>
 );
@@ -108,112 +196,117 @@ export default async function AdminPage() {
   }
 
   const startOfToday = getStartOfToday();
+  const startOfYesterday = new Date(startOfToday);
+  startOfYesterday.setDate(startOfYesterday.getDate() - 1);
   const startOfWeek = getStartOfWeek();
 
   const [
     createdToday,
+    createdYesterday,
     createdThisWeek,
     totalRoutes,
-    topViewedAllTime,
     mostRecent,
     topViewedThisWeek,
+    topViewedAllTime,
+    mostRecentCollections,
   ] = await Promise.all([
     prisma.routes.count({ where: { created_at: { gte: startOfToday } } }),
+    prisma.routes.count({
+      where: { created_at: { gte: startOfYesterday, lt: startOfToday } },
+    }),
     prisma.routes.count({ where: { created_at: { gte: startOfWeek } } }),
     prisma.routes.count(),
     prisma.routes.findMany({
-      orderBy: { view_count: "desc" },
-      take: 10,
-      select: {
-        identifier: true,
-        title: true,
-        view_count: true,
-        created_at: true,
-      },
-    }),
-    prisma.routes.findMany({
       orderBy: { created_at: "desc" },
       take: 10,
-      select: {
-        identifier: true,
-        title: true,
-        view_count: true,
-        created_at: true,
-      },
+      select: routeSelect,
     }),
     prisma.routes.findMany({
       where: { last_viewed_at: { gte: startOfWeek } },
       orderBy: { view_count: "desc" },
       take: 10,
+      select: routeSelect,
+    }),
+    prisma.routes.findMany({
+      orderBy: { view_count: "desc" },
+      take: 10,
+      select: routeSelect,
+    }),
+    prisma.pages.findMany({
+      orderBy: { created_at: "desc" },
+      take: 10,
       select: {
         identifier: true,
         title: true,
-        view_count: true,
+        is_public: true,
         created_at: true,
+        _count: { select: { page_routes: true } },
       },
     }),
   ]);
+
+  const stats = [
+    { label: "Created today", value: createdToday },
+    { label: "Created yesterday", value: createdYesterday },
+    { label: "Created this week", value: createdThisWeek },
+    { label: "Total routes", value: totalRoutes },
+  ];
 
   return (
     <main className="min-h-screen bg-paper">
       <Header variant="solid" />
 
-      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-extrabold text-ink">Admin</h1>
         <p className="mt-2 text-ink/60">Site activity overview.</p>
 
-        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-ink/10 bg-pine p-5 text-paper">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-sage">
-              Created today
-            </p>
-            <p className="mt-2 text-3xl font-extrabold">{createdToday}</p>
-          </div>
-
-          <div className="rounded-2xl border border-ink/10 bg-pine p-5 text-paper">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-sage">
-              Created this week
-            </p>
-            <p className="mt-2 text-3xl font-extrabold">{createdThisWeek}</p>
-          </div>
-
-          <div className="rounded-2xl border border-ink/10 bg-white/70 p-5">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-pine">
-              Total routes
-            </p>
-            <p className="mt-2 text-3xl font-extrabold text-ink">
-              {totalRoutes}
-            </p>
-          </div>
+        <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {stats.map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-2xl border border-ink/10 bg-white/70 p-5"
+            >
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-pine">
+                {stat.label}
+              </p>
+              <p className="mt-2 text-3xl font-extrabold text-ink">
+                {stat.value}
+              </p>
+            </div>
+          ))}
         </div>
 
-        <div className="mt-10 space-y-6">
-          <RouteList
-            title="Top 10 — most viewed (all-time)"
+        <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <RouteTable
+            title="Newest routes"
+            description="The 10 most recently created routes."
+            routes={mostRecent}
+            emptyLabel="No routes yet."
+          />
+
+          <RouteTable
+            title="Most viewed this week"
+            description="Ranked by total view count, limited to routes viewed at least once since Monday. View counts are cumulative rather than reset weekly, so this approximates weekly popularity."
+            routes={topViewedThisWeek}
+            emptyLabel="No routes viewed this week yet."
+          />
+        </div>
+
+        <div className="mt-6">
+          <RouteTable
+            title="Most viewed — all time"
             description="Ranked by total view count since the route was saved."
             routes={topViewedAllTime}
             emptyLabel="No routes yet."
-            metric={(route) =>
-              `${route.view_count} view${route.view_count === 1 ? "" : "s"}`
-            }
           />
+        </div>
 
-          <RouteList
-            title="Top 10 — newest routes"
-            description="The most recently created routes, newest first."
-            routes={mostRecent}
-            emptyLabel="No routes yet."
-            metric={(route) => formatDate(route.created_at)}
-          />
-
-          <RouteList
-            title="Top 10 — most viewed this week"
-            description="Total view count for routes that were viewed at least once since Monday. View counts are cumulative (not reset weekly), so this approximates weekly popularity rather than measuring views within the week exactly."
-            routes={topViewedThisWeek}
-            emptyLabel="No routes viewed this week yet."
-            metric={(route) =>
-              `${route.view_count} view${route.view_count === 1 ? "" : "s"}`
-            }
+        <div className="mt-6">
+          <CollectionTable
+            title="Newest collections"
+            description="The 10 most recently created collections."
+            collections={mostRecentCollections}
+            emptyLabel="No collections yet."
           />
         </div>
       </div>
