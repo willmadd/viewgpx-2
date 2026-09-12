@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
 import { useSupabaseAuth } from "./SupabaseProvider";
 import { createClient } from "@/app/lib/supabase/client";
 
@@ -46,7 +45,7 @@ const Header = ({ variant = "overlay", actions }: HeaderProps) => {
     <header
       className={
         isSolid
-          ? "relative z-[1001] w-full border-b border-ink/10 bg-paper"
+          ? "relative z-1001 w-full border-b border-ink/10 bg-paper"
           : "absolute inset-x-0 top-0 z-50 w-full"
       }
     >
