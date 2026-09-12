@@ -15,6 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       orderBy: { created_at: "desc" },
       select: { identifier: true, last_viewed_at: true, created_at: true },
     }),
+
     prisma.pages.findMany({
       where: { is_public: true },
       orderBy: { created_at: "desc" },
