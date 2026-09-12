@@ -5,10 +5,17 @@ import { prisma } from "@/app/lib/prisma";
 const BASE_URL = "https://viewgpx.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const routes = await prisma.routes.findMany({
-    orderBy: { created_at: "desc" },
-    select: { identifier: true, last_viewed_at: true, created_at: true },
-  });
+  const [routes, collections] = await Promise.all([
+    prisma.routes.findMany({
+      orderBy: { created_at: "desc" },
+      select: { identifier: true, last_viewed_at: true, created_at: true },
+    }),
+    prisma.pages.findMany({
+      where: { is_public: true },
+      orderBy: { created_at: "desc" },
+      select: { identifier: true, updated_at: true },
+    }),
+  ]);
 
   const staticEntries: MetadataRoute.Sitemap = [
     {
@@ -41,5 +48,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  return [...staticEntries, ...routeEntries];
+  const collectionEntries: MetadataRoute.Sitemap = collections.map(
+    (collection) => ({
+      url: `${BASE_URL}/collections/${collection.identifier}`,
+      lastModified: collection.updated_at,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    }),
+  );
+
+  return [...staticEntries, ...routeEntries, ...collectionEntries];
 }

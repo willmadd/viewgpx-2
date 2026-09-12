@@ -18,8 +18,10 @@ type RouteMapLoaderProps = {
   identifier: string;
   title: string | null;
   description: string | null;
+  type: string | null;
   gpxFile: string;
   viewCount: number;
+  isOwner: boolean;
 };
 
 const RouteMapLoader = (props: RouteMapLoaderProps) => {

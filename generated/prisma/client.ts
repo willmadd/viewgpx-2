@@ -51,3 +51,13 @@ export type routes = Prisma.routesModel
  * 
  */
 export type admins = Prisma.adminsModel
+/**
+ * Model pages
+ * 
+ */
+export type pages = Prisma.pagesModel
+/**
+ * Model page_routes
+ * 
+ */
+export type page_routes = Prisma.page_routesModel

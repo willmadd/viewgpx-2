@@ -10,4 +10,6 @@
  */
 export type * from './models/routes'
 export type * from './models/admins'
+export type * from './models/pages'
+export type * from './models/page_routes'
 export type * from './commonInputTypes'

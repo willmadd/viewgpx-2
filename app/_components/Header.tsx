@@ -95,7 +95,7 @@ const Header = ({ variant = "overlay", actions }: HeaderProps) => {
                 href="/account"
                 className="text-sm font-semibold text-ink underline-offset-4 decoration-terracotta drop-shadow-sm transition hover:text-paper hover:underline"
               >
-                My routes
+                Dashboard
               </Link>
 
               <button

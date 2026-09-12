@@ -44,12 +44,14 @@ export type RoutesMinAggregateOutputType = {
   gpx_storage_key: string | null
   gpx_size_bytes: bigint | null
   gpx_sha256: string | null
+  thumbnail_key: string | null
   time: Date | null
   last_viewed_at: Date | null
   view_count: number | null
   created_at: Date | null
   title: string | null
   description: string | null
+  type: string | null
   user_id: string | null
 }
 
@@ -59,12 +61,14 @@ export type RoutesMaxAggregateOutputType = {
   gpx_storage_key: string | null
   gpx_size_bytes: bigint | null
   gpx_sha256: string | null
+  thumbnail_key: string | null
   time: Date | null
   last_viewed_at: Date | null
   view_count: number | null
   created_at: Date | null
   title: string | null
   description: string | null
+  type: string | null
   user_id: string | null
 }
 
@@ -74,12 +78,14 @@ export type RoutesCountAggregateOutputType = {
   gpx_storage_key: number
   gpx_size_bytes: number
   gpx_sha256: number
+  thumbnail_key: number
   time: number
   last_viewed_at: number
   view_count: number
   created_at: number
   title: number
   description: number
+  type: number
   user_id: number
   _all: number
 }
@@ -103,12 +109,14 @@ export type RoutesMinAggregateInputType = {
   gpx_storage_key?: true
   gpx_size_bytes?: true
   gpx_sha256?: true
+  thumbnail_key?: true
   time?: true
   last_viewed_at?: true
   view_count?: true
   created_at?: true
   title?: true
   description?: true
+  type?: true
   user_id?: true
 }
 
@@ -118,12 +126,14 @@ export type RoutesMaxAggregateInputType = {
   gpx_storage_key?: true
   gpx_size_bytes?: true
   gpx_sha256?: true
+  thumbnail_key?: true
   time?: true
   last_viewed_at?: true
   view_count?: true
   created_at?: true
   title?: true
   description?: true
+  type?: true
   user_id?: true
 }
 
@@ -133,12 +143,14 @@ export type RoutesCountAggregateInputType = {
   gpx_storage_key?: true
   gpx_size_bytes?: true
   gpx_sha256?: true
+  thumbnail_key?: true
   time?: true
   last_viewed_at?: true
   view_count?: true
   created_at?: true
   title?: true
   description?: true
+  type?: true
   user_id?: true
   _all?: true
 }
@@ -235,12 +247,14 @@ export type RoutesGroupByOutputType = {
   gpx_storage_key: string | null
   gpx_size_bytes: bigint | null
   gpx_sha256: string | null
+  thumbnail_key: string | null
   time: Date
   last_viewed_at: Date
   view_count: number
   created_at: Date
   title: string | null
   description: string | null
+  type: string | null
   user_id: string | null
   _count: RoutesCountAggregateOutputType | null
   _avg: RoutesAvgAggregateOutputType | null
@@ -273,13 +287,16 @@ export type routesWhereInput = {
   gpx_storage_key?: Prisma.StringNullableFilter<"routes"> | string | null
   gpx_size_bytes?: Prisma.BigIntNullableFilter<"routes"> | bigint | number | null
   gpx_sha256?: Prisma.StringNullableFilter<"routes"> | string | null
+  thumbnail_key?: Prisma.StringNullableFilter<"routes"> | string | null
   time?: Prisma.DateTimeFilter<"routes"> | Date | string
   last_viewed_at?: Prisma.DateTimeFilter<"routes"> | Date | string
   view_count?: Prisma.IntFilter<"routes"> | number
   created_at?: Prisma.DateTimeFilter<"routes"> | Date | string
   title?: Prisma.StringNullableFilter<"routes"> | string | null
   description?: Prisma.StringNullableFilter<"routes"> | string | null
+  type?: Prisma.StringNullableFilter<"routes"> | string | null
   user_id?: Prisma.UuidNullableFilter<"routes"> | string | null
+  page_routes?: Prisma.Page_routesListRelationFilter
 }
 
 export type routesOrderByWithRelationInput = {
@@ -288,13 +305,16 @@ export type routesOrderByWithRelationInput = {
   gpx_storage_key?: Prisma.SortOrderInput | Prisma.SortOrder
   gpx_size_bytes?: Prisma.SortOrderInput | Prisma.SortOrder
   gpx_sha256?: Prisma.SortOrderInput | Prisma.SortOrder
+  thumbnail_key?: Prisma.SortOrderInput | Prisma.SortOrder
   time?: Prisma.SortOrder
   last_viewed_at?: Prisma.SortOrder
   view_count?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrderInput | Prisma.SortOrder
   user_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  page_routes?: Prisma.page_routesOrderByRelationAggregateInput
 }
 
 export type routesWhereUniqueInput = Prisma.AtLeast<{
@@ -306,13 +326,16 @@ export type routesWhereUniqueInput = Prisma.AtLeast<{
   gpx_storage_key?: Prisma.StringNullableFilter<"routes"> | string | null
   gpx_size_bytes?: Prisma.BigIntNullableFilter<"routes"> | bigint | number | null
   gpx_sha256?: Prisma.StringNullableFilter<"routes"> | string | null
+  thumbnail_key?: Prisma.StringNullableFilter<"routes"> | string | null
   time?: Prisma.DateTimeFilter<"routes"> | Date | string
   last_viewed_at?: Prisma.DateTimeFilter<"routes"> | Date | string
   view_count?: Prisma.IntFilter<"routes"> | number
   created_at?: Prisma.DateTimeFilter<"routes"> | Date | string
   title?: Prisma.StringNullableFilter<"routes"> | string | null
   description?: Prisma.StringNullableFilter<"routes"> | string | null
+  type?: Prisma.StringNullableFilter<"routes"> | string | null
   user_id?: Prisma.UuidNullableFilter<"routes"> | string | null
+  page_routes?: Prisma.Page_routesListRelationFilter
 }, "id" | "identifier">
 
 export type routesOrderByWithAggregationInput = {
@@ -321,12 +344,14 @@ export type routesOrderByWithAggregationInput = {
   gpx_storage_key?: Prisma.SortOrderInput | Prisma.SortOrder
   gpx_size_bytes?: Prisma.SortOrderInput | Prisma.SortOrder
   gpx_sha256?: Prisma.SortOrderInput | Prisma.SortOrder
+  thumbnail_key?: Prisma.SortOrderInput | Prisma.SortOrder
   time?: Prisma.SortOrder
   last_viewed_at?: Prisma.SortOrder
   view_count?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrderInput | Prisma.SortOrder
   user_id?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.routesCountOrderByAggregateInput
   _avg?: Prisma.routesAvgOrderByAggregateInput
@@ -344,12 +369,14 @@ export type routesScalarWhereWithAggregatesInput = {
   gpx_storage_key?: Prisma.StringNullableWithAggregatesFilter<"routes"> | string | null
   gpx_size_bytes?: Prisma.BigIntNullableWithAggregatesFilter<"routes"> | bigint | number | null
   gpx_sha256?: Prisma.StringNullableWithAggregatesFilter<"routes"> | string | null
+  thumbnail_key?: Prisma.StringNullableWithAggregatesFilter<"routes"> | string | null
   time?: Prisma.DateTimeWithAggregatesFilter<"routes"> | Date | string
   last_viewed_at?: Prisma.DateTimeWithAggregatesFilter<"routes"> | Date | string
   view_count?: Prisma.IntWithAggregatesFilter<"routes"> | number
   created_at?: Prisma.DateTimeWithAggregatesFilter<"routes"> | Date | string
   title?: Prisma.StringNullableWithAggregatesFilter<"routes"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"routes"> | string | null
+  type?: Prisma.StringNullableWithAggregatesFilter<"routes"> | string | null
   user_id?: Prisma.UuidNullableWithAggregatesFilter<"routes"> | string | null
 }
 
@@ -359,13 +386,16 @@ export type routesCreateInput = {
   gpx_storage_key?: string | null
   gpx_size_bytes?: bigint | number | null
   gpx_sha256?: string | null
+  thumbnail_key?: string | null
   time?: Date | string
   last_viewed_at?: Date | string
   view_count?: number
   created_at?: Date | string
   title?: string | null
   description?: string | null
+  type?: string | null
   user_id?: string | null
+  page_routes?: Prisma.page_routesCreateNestedManyWithoutRouteInput
 }
 
 export type routesUncheckedCreateInput = {
@@ -374,13 +404,16 @@ export type routesUncheckedCreateInput = {
   gpx_storage_key?: string | null
   gpx_size_bytes?: bigint | number | null
   gpx_sha256?: string | null
+  thumbnail_key?: string | null
   time?: Date | string
   last_viewed_at?: Date | string
   view_count?: number
   created_at?: Date | string
   title?: string | null
   description?: string | null
+  type?: string | null
   user_id?: string | null
+  page_routes?: Prisma.page_routesUncheckedCreateNestedManyWithoutRouteInput
 }
 
 export type routesUpdateInput = {
@@ -388,13 +421,16 @@ export type routesUpdateInput = {
   gpx_storage_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gpx_size_bytes?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   gpx_sha256?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   last_viewed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  page_routes?: Prisma.page_routesUpdateManyWithoutRouteNestedInput
 }
 
 export type routesUncheckedUpdateInput = {
@@ -403,13 +439,16 @@ export type routesUncheckedUpdateInput = {
   gpx_storage_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gpx_size_bytes?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   gpx_sha256?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   last_viewed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  page_routes?: Prisma.page_routesUncheckedUpdateManyWithoutRouteNestedInput
 }
 
 export type routesCreateManyInput = {
@@ -418,12 +457,14 @@ export type routesCreateManyInput = {
   gpx_storage_key?: string | null
   gpx_size_bytes?: bigint | number | null
   gpx_sha256?: string | null
+  thumbnail_key?: string | null
   time?: Date | string
   last_viewed_at?: Date | string
   view_count?: number
   created_at?: Date | string
   title?: string | null
   description?: string | null
+  type?: string | null
   user_id?: string | null
 }
 
@@ -432,12 +473,14 @@ export type routesUpdateManyMutationInput = {
   gpx_storage_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gpx_size_bytes?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   gpx_sha256?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   last_viewed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -447,12 +490,14 @@ export type routesUncheckedUpdateManyInput = {
   gpx_storage_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gpx_size_bytes?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   gpx_sha256?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   last_viewed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -462,12 +507,14 @@ export type routesCountOrderByAggregateInput = {
   gpx_storage_key?: Prisma.SortOrder
   gpx_size_bytes?: Prisma.SortOrder
   gpx_sha256?: Prisma.SortOrder
+  thumbnail_key?: Prisma.SortOrder
   time?: Prisma.SortOrder
   last_viewed_at?: Prisma.SortOrder
   view_count?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
 }
 
@@ -483,12 +530,14 @@ export type routesMaxOrderByAggregateInput = {
   gpx_storage_key?: Prisma.SortOrder
   gpx_size_bytes?: Prisma.SortOrder
   gpx_sha256?: Prisma.SortOrder
+  thumbnail_key?: Prisma.SortOrder
   time?: Prisma.SortOrder
   last_viewed_at?: Prisma.SortOrder
   view_count?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
 }
 
@@ -498,12 +547,14 @@ export type routesMinOrderByAggregateInput = {
   gpx_storage_key?: Prisma.SortOrder
   gpx_size_bytes?: Prisma.SortOrder
   gpx_sha256?: Prisma.SortOrder
+  thumbnail_key?: Prisma.SortOrder
   time?: Prisma.SortOrder
   last_viewed_at?: Prisma.SortOrder
   view_count?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
 }
 
@@ -511,6 +562,11 @@ export type routesSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   gpx_size_bytes?: Prisma.SortOrder
   view_count?: Prisma.SortOrder
+}
+
+export type RoutesScalarRelationFilter = {
+  is?: Prisma.routesWhereInput
+  isNot?: Prisma.routesWhereInput
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -541,6 +597,132 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type routesCreateNestedOneWithoutPage_routesInput = {
+  create?: Prisma.XOR<Prisma.routesCreateWithoutPage_routesInput, Prisma.routesUncheckedCreateWithoutPage_routesInput>
+  connectOrCreate?: Prisma.routesCreateOrConnectWithoutPage_routesInput
+  connect?: Prisma.routesWhereUniqueInput
+}
+
+export type routesUpdateOneRequiredWithoutPage_routesNestedInput = {
+  create?: Prisma.XOR<Prisma.routesCreateWithoutPage_routesInput, Prisma.routesUncheckedCreateWithoutPage_routesInput>
+  connectOrCreate?: Prisma.routesCreateOrConnectWithoutPage_routesInput
+  upsert?: Prisma.routesUpsertWithoutPage_routesInput
+  connect?: Prisma.routesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.routesUpdateToOneWithWhereWithoutPage_routesInput, Prisma.routesUpdateWithoutPage_routesInput>, Prisma.routesUncheckedUpdateWithoutPage_routesInput>
+}
+
+export type routesCreateWithoutPage_routesInput = {
+  id?: number
+  identifier: string
+  gpx_storage_key?: string | null
+  gpx_size_bytes?: bigint | number | null
+  gpx_sha256?: string | null
+  thumbnail_key?: string | null
+  time?: Date | string
+  last_viewed_at?: Date | string
+  view_count?: number
+  created_at?: Date | string
+  title?: string | null
+  description?: string | null
+  type?: string | null
+  user_id?: string | null
+}
+
+export type routesUncheckedCreateWithoutPage_routesInput = {
+  id?: number
+  identifier: string
+  gpx_storage_key?: string | null
+  gpx_size_bytes?: bigint | number | null
+  gpx_sha256?: string | null
+  thumbnail_key?: string | null
+  time?: Date | string
+  last_viewed_at?: Date | string
+  view_count?: number
+  created_at?: Date | string
+  title?: string | null
+  description?: string | null
+  type?: string | null
+  user_id?: string | null
+}
+
+export type routesCreateOrConnectWithoutPage_routesInput = {
+  where: Prisma.routesWhereUniqueInput
+  create: Prisma.XOR<Prisma.routesCreateWithoutPage_routesInput, Prisma.routesUncheckedCreateWithoutPage_routesInput>
+}
+
+export type routesUpsertWithoutPage_routesInput = {
+  update: Prisma.XOR<Prisma.routesUpdateWithoutPage_routesInput, Prisma.routesUncheckedUpdateWithoutPage_routesInput>
+  create: Prisma.XOR<Prisma.routesCreateWithoutPage_routesInput, Prisma.routesUncheckedCreateWithoutPage_routesInput>
+  where?: Prisma.routesWhereInput
+}
+
+export type routesUpdateToOneWithWhereWithoutPage_routesInput = {
+  where?: Prisma.routesWhereInput
+  data: Prisma.XOR<Prisma.routesUpdateWithoutPage_routesInput, Prisma.routesUncheckedUpdateWithoutPage_routesInput>
+}
+
+export type routesUpdateWithoutPage_routesInput = {
+  identifier?: Prisma.StringFieldUpdateOperationsInput | string
+  gpx_storage_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gpx_size_bytes?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  gpx_sha256?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  last_viewed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  view_count?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type routesUncheckedUpdateWithoutPage_routesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  identifier?: Prisma.StringFieldUpdateOperationsInput | string
+  gpx_storage_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gpx_size_bytes?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  gpx_sha256?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  last_viewed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  view_count?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+
+/**
+ * Count Type RoutesCountOutputType
+ */
+
+export type RoutesCountOutputType = {
+  page_routes: number
+}
+
+export type RoutesCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  page_routes?: boolean | RoutesCountOutputTypeCountPage_routesArgs
+}
+
+/**
+ * RoutesCountOutputType without action
+ */
+export type RoutesCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RoutesCountOutputType
+   */
+  select?: Prisma.RoutesCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * RoutesCountOutputType without action
+ */
+export type RoutesCountOutputTypeCountPage_routesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.page_routesWhereInput
+}
 
 
 export type routesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -549,13 +731,17 @@ export type routesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   gpx_storage_key?: boolean
   gpx_size_bytes?: boolean
   gpx_sha256?: boolean
+  thumbnail_key?: boolean
   time?: boolean
   last_viewed_at?: boolean
   view_count?: boolean
   created_at?: boolean
   title?: boolean
   description?: boolean
+  type?: boolean
   user_id?: boolean
+  page_routes?: boolean | Prisma.routes$page_routesArgs<ExtArgs>
+  _count?: boolean | Prisma.RoutesCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["routes"]>
 
 export type routesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -564,12 +750,14 @@ export type routesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   gpx_storage_key?: boolean
   gpx_size_bytes?: boolean
   gpx_sha256?: boolean
+  thumbnail_key?: boolean
   time?: boolean
   last_viewed_at?: boolean
   view_count?: boolean
   created_at?: boolean
   title?: boolean
   description?: boolean
+  type?: boolean
   user_id?: boolean
 }, ExtArgs["result"]["routes"]>
 
@@ -579,12 +767,14 @@ export type routesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   gpx_storage_key?: boolean
   gpx_size_bytes?: boolean
   gpx_sha256?: boolean
+  thumbnail_key?: boolean
   time?: boolean
   last_viewed_at?: boolean
   view_count?: boolean
   created_at?: boolean
   title?: boolean
   description?: boolean
+  type?: boolean
   user_id?: boolean
 }, ExtArgs["result"]["routes"]>
 
@@ -594,32 +784,44 @@ export type routesSelectScalar = {
   gpx_storage_key?: boolean
   gpx_size_bytes?: boolean
   gpx_sha256?: boolean
+  thumbnail_key?: boolean
   time?: boolean
   last_viewed_at?: boolean
   view_count?: boolean
   created_at?: boolean
   title?: boolean
   description?: boolean
+  type?: boolean
   user_id?: boolean
 }
 
-export type routesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identifier" | "gpx_storage_key" | "gpx_size_bytes" | "gpx_sha256" | "time" | "last_viewed_at" | "view_count" | "created_at" | "title" | "description" | "user_id", ExtArgs["result"]["routes"]>
+export type routesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identifier" | "gpx_storage_key" | "gpx_size_bytes" | "gpx_sha256" | "thumbnail_key" | "time" | "last_viewed_at" | "view_count" | "created_at" | "title" | "description" | "type" | "user_id", ExtArgs["result"]["routes"]>
+export type routesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  page_routes?: boolean | Prisma.routes$page_routesArgs<ExtArgs>
+  _count?: boolean | Prisma.RoutesCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type routesIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type routesIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $routesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "routes"
-  objects: {}
+  objects: {
+    page_routes: Prisma.$page_routesPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     identifier: string
     gpx_storage_key: string | null
     gpx_size_bytes: bigint | null
     gpx_sha256: string | null
+    thumbnail_key: string | null
     time: Date
     last_viewed_at: Date
     view_count: number
     created_at: Date
     title: string | null
     description: string | null
+    type: string | null
     user_id: string | null
   }, ExtArgs["result"]["routes"]>
   composites: {}
@@ -1015,6 +1217,7 @@ readonly fields: routesFieldRefs;
  */
 export interface Prisma__routesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  page_routes<T extends Prisma.routes$page_routesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.routes$page_routesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$page_routesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1049,12 +1252,14 @@ export interface routesFieldRefs {
   readonly gpx_storage_key: Prisma.FieldRef<"routes", 'String'>
   readonly gpx_size_bytes: Prisma.FieldRef<"routes", 'BigInt'>
   readonly gpx_sha256: Prisma.FieldRef<"routes", 'String'>
+  readonly thumbnail_key: Prisma.FieldRef<"routes", 'String'>
   readonly time: Prisma.FieldRef<"routes", 'DateTime'>
   readonly last_viewed_at: Prisma.FieldRef<"routes", 'DateTime'>
   readonly view_count: Prisma.FieldRef<"routes", 'Int'>
   readonly created_at: Prisma.FieldRef<"routes", 'DateTime'>
   readonly title: Prisma.FieldRef<"routes", 'String'>
   readonly description: Prisma.FieldRef<"routes", 'String'>
+  readonly type: Prisma.FieldRef<"routes", 'String'>
   readonly user_id: Prisma.FieldRef<"routes", 'String'>
 }
     
@@ -1072,6 +1277,10 @@ export type routesFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the routes
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.routesInclude<ExtArgs> | null
   /**
    * Filter, which routes to fetch.
    */
@@ -1091,6 +1300,10 @@ export type routesFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.routesInclude<ExtArgs> | null
+  /**
    * Filter, which routes to fetch.
    */
   where: Prisma.routesWhereUniqueInput
@@ -1108,6 +1321,10 @@ export type routesFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the routes
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.routesInclude<ExtArgs> | null
   /**
    * Filter, which routes to fetch.
    */
@@ -1157,6 +1374,10 @@ export type routesFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.routesInclude<ExtArgs> | null
+  /**
    * Filter, which routes to fetch.
    */
   where?: Prisma.routesWhereInput
@@ -1204,6 +1425,10 @@ export type routesFindManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the routes
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.routesInclude<ExtArgs> | null
   /**
    * Filter, which routes to fetch.
    */
@@ -1253,6 +1478,10 @@ export type routesCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.routesInclude<ExtArgs> | null
+  /**
    * The data needed to create a routes.
    */
   data: Prisma.XOR<Prisma.routesCreateInput, Prisma.routesUncheckedCreateInput>
@@ -1300,6 +1529,10 @@ export type routesUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the routes
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.routesInclude<ExtArgs> | null
   /**
    * The data needed to update a routes.
    */
@@ -1367,6 +1600,10 @@ export type routesUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.routesInclude<ExtArgs> | null
+  /**
    * The filter to search for the routes to update in case it exists.
    */
   where: Prisma.routesWhereUniqueInput
@@ -1393,6 +1630,10 @@ export type routesDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.routesInclude<ExtArgs> | null
+  /**
    * Filter which routes to delete.
    */
   where: Prisma.routesWhereUniqueInput
@@ -1413,6 +1654,30 @@ export type routesDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
+ * routes.page_routes
+ */
+export type routes$page_routesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the page_routes
+   */
+  select?: Prisma.page_routesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the page_routes
+   */
+  omit?: Prisma.page_routesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.page_routesInclude<ExtArgs> | null
+  where?: Prisma.page_routesWhereInput
+  orderBy?: Prisma.page_routesOrderByWithRelationInput | Prisma.page_routesOrderByWithRelationInput[]
+  cursor?: Prisma.page_routesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Page_routesScalarFieldEnum | Prisma.Page_routesScalarFieldEnum[]
+}
+
+/**
  * routes without action
  */
 export type routesDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1424,4 +1689,8 @@ export type routesDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the routes
    */
   omit?: Prisma.routesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.routesInclude<ExtArgs> | null
 }

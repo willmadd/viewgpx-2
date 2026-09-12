@@ -398,7 +398,9 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   routes: 'routes',
-  admins: 'admins'
+  admins: 'admins',
+  pages: 'pages',
+  page_routes: 'page_routes'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "routes" | "admins"
+    modelProps: "routes" | "admins" | "pages" | "page_routes"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -566,6 +568,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    pages: {
+      payload: Prisma.$pagesPayload<ExtArgs>
+      fields: Prisma.pagesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.pagesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pagesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.pagesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pagesPayload>
+        }
+        findFirst: {
+          args: Prisma.pagesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pagesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.pagesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pagesPayload>
+        }
+        findMany: {
+          args: Prisma.pagesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pagesPayload>[]
+        }
+        create: {
+          args: Prisma.pagesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pagesPayload>
+        }
+        createMany: {
+          args: Prisma.pagesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.pagesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pagesPayload>[]
+        }
+        delete: {
+          args: Prisma.pagesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pagesPayload>
+        }
+        update: {
+          args: Prisma.pagesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pagesPayload>
+        }
+        deleteMany: {
+          args: Prisma.pagesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.pagesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.pagesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pagesPayload>[]
+        }
+        upsert: {
+          args: Prisma.pagesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pagesPayload>
+        }
+        aggregate: {
+          args: Prisma.PagesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePages>
+        }
+        groupBy: {
+          args: Prisma.pagesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PagesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.pagesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PagesCountAggregateOutputType> | number
+        }
+      }
+    }
+    page_routes: {
+      payload: Prisma.$page_routesPayload<ExtArgs>
+      fields: Prisma.page_routesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.page_routesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$page_routesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.page_routesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$page_routesPayload>
+        }
+        findFirst: {
+          args: Prisma.page_routesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$page_routesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.page_routesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$page_routesPayload>
+        }
+        findMany: {
+          args: Prisma.page_routesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$page_routesPayload>[]
+        }
+        create: {
+          args: Prisma.page_routesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$page_routesPayload>
+        }
+        createMany: {
+          args: Prisma.page_routesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.page_routesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$page_routesPayload>[]
+        }
+        delete: {
+          args: Prisma.page_routesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$page_routesPayload>
+        }
+        update: {
+          args: Prisma.page_routesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$page_routesPayload>
+        }
+        deleteMany: {
+          args: Prisma.page_routesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.page_routesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.page_routesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$page_routesPayload>[]
+        }
+        upsert: {
+          args: Prisma.page_routesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$page_routesPayload>
+        }
+        aggregate: {
+          args: Prisma.Page_routesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePage_routes>
+        }
+        groupBy: {
+          args: Prisma.page_routesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Page_routesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.page_routesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Page_routesCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -611,12 +761,14 @@ export const RoutesScalarFieldEnum = {
   gpx_storage_key: 'gpx_storage_key',
   gpx_size_bytes: 'gpx_size_bytes',
   gpx_sha256: 'gpx_sha256',
+  thumbnail_key: 'thumbnail_key',
   time: 'time',
   last_viewed_at: 'last_viewed_at',
   view_count: 'view_count',
   created_at: 'created_at',
   title: 'title',
   description: 'description',
+  type: 'type',
   user_id: 'user_id'
 } as const
 
@@ -629,6 +781,29 @@ export const AdminsScalarFieldEnum = {
 } as const
 
 export type AdminsScalarFieldEnum = (typeof AdminsScalarFieldEnum)[keyof typeof AdminsScalarFieldEnum]
+
+
+export const PagesScalarFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  user_id: 'user_id',
+  title: 'title',
+  description: 'description',
+  is_public: 'is_public',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type PagesScalarFieldEnum = (typeof PagesScalarFieldEnum)[keyof typeof PagesScalarFieldEnum]
+
+
+export const Page_routesScalarFieldEnum = {
+  page_id: 'page_id',
+  route_id: 'route_id',
+  created_at: 'created_at'
+} as const
+
+export type Page_routesScalarFieldEnum = (typeof Page_routesScalarFieldEnum)[keyof typeof Page_routesScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -714,6 +889,13 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -883,6 +1065,8 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   routes?: Prisma.routesOmit
   admins?: Prisma.adminsOmit
+  pages?: Prisma.pagesOmit
+  page_routes?: Prisma.page_routesOmit
 }
 
 /* Types for Logging */
