@@ -8,25 +8,28 @@ datasource db {
 }
 
 model routes {
-  id              Int      @unique(map: "idx_24579_id") @default(autoincrement())
-  identifier      String   @unique(map: "idx_24579_identifier") @db.VarChar(255)
-  gpx_storage_key String?  @db.VarChar(500)
+  id              Int     @unique(map: "idx_24579_id") @default(autoincrement())
+  identifier      String  @unique(map: "idx_24579_identifier") @db.VarChar(255)
+  gpx_storage_key String? @db.VarChar(500)
   gpx_size_bytes  BigInt?
-  gpx_sha256      String?  @db.Char(64)
-  thumbnail_key   String?  @db.VarChar(500)
-  time            DateTime @default(now()) @db.Timestamptz(6)
-  last_viewed_at  DateTime @default(now()) @db.Timestamptz(6)
-  view_count      Int      @default(0)
-  created_at      DateTime @default(now()) @db.Timestamptz(6)
-  title           String?  @db.VarChar(255)
-  description     String?
-  type            String?  @db.VarChar(40)
+  gpx_sha256      String? @db.Char(64)
+  thumbnail_key   String? @db.VarChar(500)
 
-  user_id String? @db.Uuid
+  start_location Unsupported("geography(Point,4326)")?
+
+  time           DateTime @default(now()) @db.Timestamptz(6)
+  last_viewed_at DateTime @default(now()) @db.Timestamptz(6)
+  view_count     Int      @default(0)
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+  title          String?  @db.VarChar(255)
+  description    String?
+  type           String?  @db.VarChar(40)
+  user_id        String?  @db.Uuid
 
   page_routes page_routes[]
 
   @@index([user_id])
+  @@index([start_location], map: "routes_start_location_gix", type: Gist)
 }
 
 model admins {

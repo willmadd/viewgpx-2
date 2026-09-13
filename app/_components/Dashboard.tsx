@@ -20,6 +20,8 @@ import DraftCollectionMenu from "./DraftCollectionMenu";
 import { useSupabaseAuth } from "./SupabaseProvider";
 import { event as trackEvent } from "@/app/lib/gtag";
 import { ROUTE_TYPES, getRouteTypeLabel } from "@/app/lib/routeTypes";
+import type { NearbyRoute } from "@/app/lib/nearbyRoutes";
+import RouteThumbnail from "./RouteThumbnail";
 
 import "leaflet/dist/leaflet.css";
 
@@ -48,6 +50,7 @@ type DashboardProps = {
   identifier?: string;
   viewCount?: number;
   isOwner?: boolean;
+  nearbyRoutes?: NearbyRoute[];
   setError?: () => void;
 };
 
@@ -664,6 +667,63 @@ const ElevationProfile = ({
   );
 };
 
+const formatDistance = (distanceKm: number) => {
+  if (distanceKm < 1) {
+    return `${formatNumber(distanceKm * 1000)} m away`;
+  }
+
+  return `${formatNumber(distanceKm, distanceKm < 10 ? 1 : 0)} km away`;
+};
+
+const NearbyRoutes = ({ routes }: { routes: NearbyRoute[] }) => {
+  if (!routes.length) {
+    return null;
+  }
+
+  return (
+    <section className="mx-auto max-w-screen-2xl border-x border-b border-ink/10 bg-paper p-5 sm:p-6">
+      <div className="mb-5">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-pine">
+          Explore more
+        </p>
+
+        <h2 className="mt-1 text-xl font-bold text-ink">Nearby routes</h2>
+      </div>
+
+      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {routes.map((route) => {
+          const routeTypeLabel = getRouteTypeLabel(route.type);
+
+          return (
+            <li key={route.identifier}>
+              <Link
+                href={`/route/${route.identifier}`}
+                className="flex items-center gap-4 rounded-2xl border border-ink/10 bg-white/65 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <RouteThumbnail
+                  src={route.thumbnailUrl}
+                  alt={route.title || route.identifier}
+                />
+
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-bold text-ink">
+                    {route.title || route.identifier}
+                  </p>
+
+                  <p className="mt-1 text-xs font-medium text-ink/40">
+                    {formatDistance(route.distanceKm)}
+                    {routeTypeLabel && ` · ${routeTypeLabel}`}
+                  </p>
+                </div>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+};
+
 const Dashboard = ({
   gpsJson,
   gpxFile,
@@ -671,6 +731,7 @@ const Dashboard = ({
   identifier,
   viewCount,
   isOwner = false,
+  nearbyRoutes = [],
   setError,
 }: DashboardProps) => {
   const [marker, setMarker] = useState<MapMarker | null>(null);
@@ -797,6 +858,8 @@ const Dashboard = ({
           onHover={handleElevationHover}
         />
       </div>
+
+      <NearbyRoutes routes={nearbyRoutes} />
     </main>
   );
 };
@@ -941,6 +1004,11 @@ const CurrentRoutePanelWithSave = ({
         sessionStorage.removeItem("currentGpxFile");
       } catch {
         // ignore storage errors
+      }
+
+      if (data.duplicate) {
+        router.push(`/route/${data.identifier}?duplicate=1`);
+        return;
       }
 
       trackEvent("save_route", { route_identifier: data.identifier });

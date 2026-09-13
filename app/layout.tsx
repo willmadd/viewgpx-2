@@ -8,6 +8,7 @@ import Providers from "./_components/Providers";
 import Footer from "./_components/Footer";
 import GoogleAnalytics from "./_components/GoogleAnalytics";
 import AnalyticsPageview from "./_components/AnalyticsPageview";
+import AdsenseNavigationRefresh from "./_components/AdsenseNavigationRefresh";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -63,6 +64,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
         <Suspense fallback={null}>
           <AnalyticsPageview />
+          {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
+            <AdsenseNavigationRefresh />
+          )}
         </Suspense>
 
         {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (

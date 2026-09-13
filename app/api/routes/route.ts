@@ -7,6 +7,7 @@ import { createClient } from "@/app/lib/supabase/server";
 import { prisma } from "@/app/lib/prisma";
 import { uploadGpxToBunny, uploadThumbnailToBunny } from "@/app/lib/bunny";
 import { generateRouteIdentifier } from "@/app/lib/identifier";
+import { getStartCoordinates } from "@/app/lib/gpxCoordinates";
 import { isRouteType } from "@/app/lib/routeTypes";
 import { getThumbnailUrl } from "@/app/lib/thumbnail";
 
@@ -75,6 +76,19 @@ export async function POST(request: Request) {
 
   const contents = Buffer.from(gpx, "utf8");
   const sha256 = crypto.createHash("sha256").update(contents).digest("hex");
+
+  const existingRoute = await prisma.routes.findFirst({
+    where: user ? { gpx_sha256: sha256, user_id: user.id } : { gpx_sha256: sha256 },
+    select: { identifier: true },
+  });
+
+  if (existingRoute) {
+    return NextResponse.json({
+      identifier: existingRoute.identifier,
+      duplicate: true,
+    });
+  }
+
   const identifier = await generateRouteIdentifier(title);
   const storageKey = `gpx/${identifier}.gpx`;
 
@@ -110,6 +124,21 @@ export async function POST(request: Request) {
       user_id: user?.id ?? null,
     },
   });
+
+  // start_location is a PostGIS geography column, which Prisma exposes as
+  // Unsupported and cannot write through the normal client.
+  const startCoordinates = getStartCoordinates(gpx);
+
+  if (startCoordinates) {
+    await prisma.$executeRaw`
+      UPDATE public.routes
+      SET start_location = extensions.ST_SetSRID(
+        extensions.ST_MakePoint(${startCoordinates.longitude}, ${startCoordinates.latitude}),
+        4326
+      )::extensions.geography
+      WHERE id = ${route.id}
+    `;
+  }
 
   return NextResponse.json({ identifier: route.identifier });
 }

@@ -112,7 +112,6 @@ const SearchClient = () => {
   };
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
-
   return (
     <main className="min-h-screen bg-paper">
       <Header variant="solid" />
@@ -175,8 +174,7 @@ const SearchClient = () => {
             <p className="text-sm text-red-600">{error}</p>
           ) : routes.length === 0 ? (
             <p className="text-sm text-ink/50">
-              No routes found{submittedQuery ? ` for "${submittedQuery}"` : ""}
-              .
+              No routes found{submittedQuery ? ` for "${submittedQuery}"` : ""}.
             </p>
           ) : (
             <>
@@ -224,7 +222,9 @@ const SearchClient = () => {
                 <div className="mt-6 flex items-center justify-between gap-4">
                   <button
                     type="button"
-                    onClick={() => setPage((current) => Math.max(1, current - 1))}
+                    onClick={() =>
+                      setPage((current) => Math.max(1, current - 1))
+                    }
                     disabled={page <= 1}
                     className="rounded-xl border border-ink/15 bg-white/80 px-4 py-2 text-sm font-bold text-ink transition hover:bg-ink/5 disabled:cursor-not-allowed disabled:opacity-40"
                   >
