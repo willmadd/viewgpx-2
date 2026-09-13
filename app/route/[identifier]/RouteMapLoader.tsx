@@ -2,6 +2,8 @@
 
 import dynamic from "next/dynamic";
 
+import type { NearbyRoute } from "@/app/lib/nearbyRoutes";
+
 const RouteClient = dynamic(() => import("./RouteClient"), {
   ssr: false,
   loading: () => (
@@ -22,6 +24,8 @@ type RouteMapLoaderProps = {
   gpxFile: string;
   viewCount: number;
   isOwner: boolean;
+  isDuplicate: boolean;
+  nearbyRoutes: NearbyRoute[];
 };
 
 const RouteMapLoader = (props: RouteMapLoaderProps) => {

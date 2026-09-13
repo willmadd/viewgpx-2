@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { createClient } from "@/app/lib/supabase/server";
 import { prisma } from "@/app/lib/prisma";
+import { getNearbyRoutes } from "@/app/lib/nearbyRoutes";
 import RouteMapLoader from "./RouteMapLoader";
 
 type RouteParams = { identifier: string };
@@ -27,10 +28,12 @@ const getRoute = async (identifier: string) => {
     throw new Error("NEXT_PUBLIC_GPX_CDN_URL is not configured");
   }
 
-  const gpxResponse = await fetch(
-    `https://${cdnHost}/${route.gpx_storage_key}`,
-    { cache: "no-store" },
-  );
+  const [gpxResponse, nearbyRoutes] = await Promise.all([
+    fetch(`https://${cdnHost}/${route.gpx_storage_key}`, {
+      cache: "no-store",
+    }),
+    getNearbyRoutes(route.identifier),
+  ]);
 
   if (!gpxResponse.ok) {
     return null;
@@ -55,6 +58,7 @@ const getRoute = async (identifier: string) => {
     gpxFile,
     viewCount: updated.view_count,
     isOwner,
+    nearbyRoutes,
   };
 };
 
@@ -83,10 +87,13 @@ export async function generateMetadata({
 
 export default async function RoutePage({
   params,
+  searchParams,
 }: {
   params: Promise<RouteParams>;
+  searchParams: Promise<{ duplicate?: string }>;
 }) {
   const { identifier } = await params;
+  const { duplicate } = await searchParams;
   const route = await getRoute(identifier);
 
   if (!route) {
@@ -102,6 +109,8 @@ export default async function RoutePage({
       gpxFile={route.gpxFile}
       viewCount={route.viewCount}
       isOwner={route.isOwner}
+      isDuplicate={duplicate === "1"}
+      nearbyRoutes={route.nearbyRoutes}
     />
   );
 }
