@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/server";
 import { prisma } from "@/app/lib/prisma";
 import { getNearbyRoutes } from "@/app/lib/nearbyRoutes";
+import { getThumbnailUrl } from "@/app/lib/thumbnail";
 import RouteMapLoader from "./RouteMapLoader";
 
 type RouteParams = { identifier: string };
@@ -70,18 +71,35 @@ export async function generateMetadata({
   const { identifier } = await params;
   const route = await prisma.routes.findUnique({
     where: { identifier },
-    select: { title: true, description: true },
+    select: { title: true, description: true, og_image_key: true },
   });
 
   if (!route) {
     return { title: "Route not found | View GPX" };
   }
 
+  const title = `${route.title || "Route"} | Route Information `;
+  const description =
+    route.description ||
+    `View, Download and share ${route.title || "Route"} information and GPX file on View GPX.`;
+  const ogImageUrl = getThumbnailUrl(route.og_image_key);
+
   return {
-    title: `${route.title || "Route"} | Route Information `,
-    description:
-      route.description ||
-      `View, Download and share ${route.title || "Route"} information and GPX file on View GPX.`,
+    title,
+    description,
+    openGraph: {
+      siteName: "View GPX",
+      type: "website",
+      title,
+      description,
+      images: ogImageUrl ? [ogImageUrl] : ["/images/demo.webp"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ogImageUrl ? [ogImageUrl] : ["/images/demo.webp"],
+    },
   };
 }
 

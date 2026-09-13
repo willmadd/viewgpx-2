@@ -14,6 +14,7 @@ model routes {
   gpx_size_bytes  BigInt?
   gpx_sha256      String? @db.Char(64)
   thumbnail_key   String? @db.VarChar(500)
+  og_image_key    String? @db.VarChar(500)
 
   start_location Unsupported("geography(Point,4326)")?
 
