@@ -392,6 +392,12 @@ const ElevationProfile = ({
   onHover: (point: ElevationPoint) => void;
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const [hover, setHover] = useState<{
+    point: ElevationPoint;
+    pixelX: number;
+    pixelY: number;
+    gradient: number | null;
+  } | null>(null);
 
   const width = 800;
   const height = 260;
@@ -477,6 +483,8 @@ const ElevationProfile = ({
     };
   });
 
+  const GRADIENT_LOOKBACK_POINTS = 5;
+
   const handlePointerMove = (event: React.PointerEvent<SVGSVGElement>) => {
     const svg = svgRef.current;
 
@@ -497,10 +505,30 @@ const ElevationProfile = ({
     const index = Math.round(ratio * (validRoute.length - 1));
     const point = validRoute[index];
 
-    if (point) {
-      onHover(point);
+    if (!point) {
+      return;
     }
+
+    onHover(point);
+
+    const lookbackPoint =
+      validRoute[Math.max(0, index - GRADIENT_LOOKBACK_POINTS)];
+    const distanceDeltaKm = point.x - lookbackPoint.x;
+    const elevationDeltaM = point.y - lookbackPoint.y;
+    const gradient =
+      distanceDeltaKm > 0
+        ? (elevationDeltaM / (distanceDeltaKm * 1000)) * 100
+        : null;
+
+    setHover({
+      point,
+      pixelX: scaleX(point.x),
+      pixelY: scaleY(point.y),
+      gradient,
+    });
   };
+
+  const handlePointerLeave = () => setHover(null);
 
   return (
     <section className="h-full bg-sage/10 p-5 sm:p-6">
@@ -513,76 +541,124 @@ const ElevationProfile = ({
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-ink/10 bg-paper p-2">
-        <svg
-          ref={svgRef}
-          id="route-elevation-svg"
-          viewBox={`0 0 ${width} ${height}`}
-          onPointerMove={handlePointerMove}
-          className="h-auto w-full touch-none"
-          role="img"
-          aria-label="Route elevation profile"
-        >
-          <defs>
-            <linearGradient id="elevation-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3C5A54" stopOpacity="0.35" />
-              <stop offset="100%" stopColor="#3C5A54" stopOpacity="0.05" />
-            </linearGradient>
-          </defs>
+        <div className="relative">
+          <svg
+            ref={svgRef}
+            id="route-elevation-svg"
+            viewBox={`0 0 ${width} ${height}`}
+            onPointerMove={handlePointerMove}
+            onPointerLeave={handlePointerLeave}
+            className="h-auto w-full touch-none"
+            role="img"
+            aria-label="Route elevation profile"
+          >
+            <defs>
+              <linearGradient id="elevation-fill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#3C5A54" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#3C5A54" stopOpacity="0.05" />
+              </linearGradient>
+            </defs>
 
-          {gridLines.map((line) => (
-            <g key={line.y}>
-              <line
-                x1={padding.left}
-                x2={padding.left + chartWidth}
-                y1={line.y}
-                y2={line.y}
-                stroke="#2B302E"
-                strokeOpacity="0.1"
-                strokeWidth="1"
-              />
+            {gridLines.map((line) => (
+              <g key={line.y}>
+                <line
+                  x1={padding.left}
+                  x2={padding.left + chartWidth}
+                  y1={line.y}
+                  y2={line.y}
+                  stroke="#2B302E"
+                  strokeOpacity="0.1"
+                  strokeWidth="1"
+                />
 
+                <text
+                  x={padding.left - 10}
+                  y={line.y + 4}
+                  textAnchor="end"
+                  className="fill-ink/50 text-[11px]"
+                >
+                  {formatNumber(line.value)}m
+                </text>
+              </g>
+            ))}
+
+            {distanceTicks.map((tick) => (
               <text
-                x={padding.left - 10}
-                y={line.y + 4}
-                textAnchor="end"
+                key={tick.x}
+                x={tick.x}
+                y={height - 12}
+                textAnchor="middle"
                 className="fill-ink/50 text-[11px]"
               >
-                {formatNumber(line.value)}m
+                {formatNumber(tick.value, 1)}km
               </text>
-            </g>
-          ))}
+            ))}
 
-          {distanceTicks.map((tick) => (
-            <text
-              key={tick.x}
-              x={tick.x}
-              y={height - 12}
-              textAnchor="middle"
-              className="fill-ink/50 text-[11px]"
+            <polygon points={areaPoints} fill="url(#elevation-fill)" />
+
+            <polyline
+              points={linePoints}
+              fill="none"
+              stroke="#3C5A54"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+
+            <rect
+              x={padding.left}
+              y={padding.top}
+              width={chartWidth}
+              height={chartHeight}
+              fill="transparent"
+            />
+
+            {hover && (
+              <g>
+                <line
+                  x1={hover.pixelX}
+                  x2={hover.pixelX}
+                  y1={padding.top}
+                  y2={padding.top + chartHeight}
+                  stroke="#2B302E"
+                  strokeOpacity="0.25"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 4"
+                />
+
+                <circle
+                  cx={hover.pixelX}
+                  cy={hover.pixelY}
+                  r="5"
+                  fill="#3C5A54"
+                  stroke="#fdfaf6"
+                  strokeWidth="2"
+                />
+              </g>
+            )}
+          </svg>
+
+          {hover && (
+            <div
+              className="pointer-events-none absolute top-2 -translate-x-1/2 rounded-lg border border-ink/10 bg-ink px-3 py-2 text-xs font-semibold text-paper shadow-lg"
+              style={{
+                left: `${Math.min(94, Math.max(6, (hover.pixelX / width) * 100))}%`,
+              }}
             >
-              {formatNumber(tick.value, 1)}km
-            </text>
-          ))}
+              <p>
+                {formatNumber(hover.point.x, 2)} km &middot;{" "}
+                {formatNumber(hover.point.y)} m
+              </p>
 
-          <polygon points={areaPoints} fill="url(#elevation-fill)" />
-
-          <polyline
-            points={linePoints}
-            fill="none"
-            stroke="#3C5A54"
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-
-          <rect
-            x={padding.left}
-            y={padding.top}
-            width={chartWidth}
-            height={chartHeight}
-            fill="transparent"
-          />
-        </svg>
+              {hover.gradient !== null && (
+                <p className="mt-0.5 text-paper/70">
+                  Gradient: {hover.gradient > 0 ? "+" : ""}
+                  {formatNumber(hover.gradient, 1)}%
+                </p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
