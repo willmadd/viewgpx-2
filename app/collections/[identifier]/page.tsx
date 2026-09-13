@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/server";
 import { prisma } from "@/app/lib/prisma";
 import { getThumbnailUrl } from "@/app/lib/thumbnail";
+import { isAdmin } from "@/app/lib/isAdmin";
 import Header from "@/app/_components/Header";
 import RouteThumbnail from "@/app/_components/RouteThumbnail";
 
@@ -40,7 +41,10 @@ const getCollection = async (identifier: string) => {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user || user.id !== collection.user_id) {
+    const isOwner = Boolean(user && user.id === collection.user_id);
+    const viewerIsAdmin = Boolean(user && (await isAdmin(user.id)));
+
+    if (!isOwner && !viewerIsAdmin) {
       return null;
     }
   }
@@ -88,7 +92,7 @@ export default async function PublicCollectionPage({
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
         {!collection.is_public && (
           <p className="mb-6 inline-flex rounded-full bg-ink/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-ink/60">
-            Private preview — only you can see this collection
+            Private — not visible to the public
           </p>
         )}
 

@@ -155,8 +155,13 @@ const CollectionTable = ({
               <tr key={collection.identifier}>
                 <td className="py-2.5 pr-3 text-ink/40">{index + 1}</td>
 
-                <td className="max-w-[220px] truncate py-2.5 pr-3 font-semibold text-ink">
-                  {collection.title || collection.identifier}
+                <td className="max-w-[220px] py-2.5 pr-3">
+                  <Link
+                    href={`/collections/${collection.identifier}`}
+                    className="block truncate font-semibold text-ink underline-offset-4 hover:text-pine hover:underline"
+                  >
+                    {collection.title || collection.identifier}
+                  </Link>
                 </td>
 
                 <td className="py-2.5 pr-3 text-ink/60">
