@@ -973,9 +973,12 @@ const CurrentRoutePanelWithSave = ({
 
     try {
       const { renderStaticRouteMap } = await import("../utils/pdfImages");
-      const thumbnail = await renderStaticRouteMap(route, 256, 256).catch(
-        () => null,
-      );
+      const [thumbnail, ogImage] = await Promise.all([
+        renderStaticRouteMap(route, 256, 256).catch(() => null),
+        // 1200x630 is the standard Open Graph image size used by
+        // Facebook/X/LinkedIn link previews.
+        renderStaticRouteMap(route, 1200, 630).catch(() => null),
+      ]);
 
       const response = await fetch("/api/routes", {
         method: "POST",
@@ -985,6 +988,7 @@ const CurrentRoutePanelWithSave = ({
           description,
           type,
           thumbnail: thumbnail ?? undefined,
+          ogImage: ogImage ?? undefined,
           gpx: gpxFile,
         }),
       });

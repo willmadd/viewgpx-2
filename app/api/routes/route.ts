@@ -11,15 +11,36 @@ import { getStartCoordinates } from "@/app/lib/gpxCoordinates";
 import { isRouteType } from "@/app/lib/routeTypes";
 import { getThumbnailUrl } from "@/app/lib/thumbnail";
 
-const THUMBNAIL_DATA_URL_PATTERN = /^data:image\/png;base64,([a-zA-Z0-9+/=]+)$/;
+const PNG_DATA_URL_PATTERN = /^data:image\/png;base64,([a-zA-Z0-9+/=]+)$/;
 
 const SaveRouteSchema = z.object({
   title: z.string().trim().min(1).max(120),
   description: z.string().trim().max(500).optional().or(z.literal("")),
   type: z.string().trim().max(40).optional().or(z.literal("")),
   thumbnail: z.string().trim().max(2_000_000).optional().or(z.literal("")),
+  ogImage: z.string().trim().max(8_000_000).optional().or(z.literal("")),
   gpx: z.string().min(1).max(20 * 1024 * 1024),
 });
+
+const uploadPngIfPresent = async (
+  dataUrl: string | undefined,
+  storageKey: string,
+): Promise<string | null> => {
+  const match = dataUrl ? PNG_DATA_URL_PATTERN.exec(dataUrl) : null;
+
+  if (!match) {
+    return null;
+  }
+
+  try {
+    await uploadThumbnailToBunny(storageKey, Buffer.from(match[1], "base64"));
+    return storageKey;
+  } catch {
+    // Thumbnails and OG images are a non-critical enhancement — the route
+    // still saves.
+    return null;
+  }
+};
 
 export async function GET() {
   const supabase = await createClient();
@@ -71,7 +92,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { title, description, type, thumbnail, gpx } = parsed.data;
+  const { title, description, type, thumbnail, ogImage, gpx } = parsed.data;
   const routeType = type && isRouteType(type) ? type : null;
 
   const contents = Buffer.from(gpx, "utf8");
@@ -94,22 +115,10 @@ export async function POST(request: Request) {
 
   await uploadGpxToBunny(storageKey, contents);
 
-  let thumbnailKey: string | null = null;
-  const thumbnailMatch = thumbnail
-    ? THUMBNAIL_DATA_URL_PATTERN.exec(thumbnail)
-    : null;
-
-  if (thumbnailMatch) {
-    try {
-      const thumbnailBuffer = Buffer.from(thumbnailMatch[1], "base64");
-      const candidateKey = `thumbnails/${identifier}.png`;
-      await uploadThumbnailToBunny(candidateKey, thumbnailBuffer);
-      thumbnailKey = candidateKey;
-    } catch {
-      // Thumbnails are a non-critical enhancement — the route still saves.
-      thumbnailKey = null;
-    }
-  }
+  const [thumbnailKey, ogImageKey] = await Promise.all([
+    uploadPngIfPresent(thumbnail, `thumbnails/${identifier}.png`),
+    uploadPngIfPresent(ogImage, `og-images/${identifier}.png`),
+  ]);
 
   const route = await prisma.routes.create({
     data: {
@@ -121,6 +130,7 @@ export async function POST(request: Request) {
       gpx_size_bytes: BigInt(contents.length),
       gpx_sha256: sha256,
       thumbnail_key: thumbnailKey,
+      og_image_key: ogImageKey,
       user_id: user?.id ?? null,
     },
   });

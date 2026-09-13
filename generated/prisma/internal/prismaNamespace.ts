@@ -762,6 +762,7 @@ export const RoutesScalarFieldEnum = {
   gpx_size_bytes: 'gpx_size_bytes',
   gpx_sha256: 'gpx_sha256',
   thumbnail_key: 'thumbnail_key',
+  og_image_key: 'og_image_key',
   time: 'time',
   last_viewed_at: 'last_viewed_at',
   view_count: 'view_count',
